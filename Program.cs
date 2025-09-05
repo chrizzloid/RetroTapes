@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using RetroTapes.Data;
+using RetroTapes.Models;
+
 namespace RetroTapes
 {
     public class Program
@@ -5,9 +9,11 @@ namespace RetroTapes
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            var connectionString = builder.Configuration.GetConnectionString("SakilaDb") ?? throw new InvalidOperationException("Connection string 'SakilaDb' not found.");
+            
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddDbContext<SakilaContext>(options => options.UseSqlServer(connectionString));
 
             var app = builder.Build();
 
