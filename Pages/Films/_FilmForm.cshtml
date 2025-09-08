@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model RetroTapes.ViewModels.FilmEditVm
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="ReleaseYear" class="form-label"></label>
+        <input asp-for="ReleaseYear" class="form-control" />
+        <span asp-validation-for="ReleaseYear" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="LanguageId" class="form-label">Språk</label>
+        <select asp-for="LanguageId" class="form-select" asp-items="ViewBag.LanguageOptions"></select>
+        <span asp-validation-for="LanguageId" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="OriginalLanguageId" class="form-label">Originalspråk (valfritt)</label>
+        <select asp-for="OriginalLanguageId" class="form-select" asp-items="ViewBag.LanguageOptions">
+            <option value="">--</option>
+        </select>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Kategorier</label>
+        <select asp-for="CategoryIds" class="form-select" asp-items="ViewBag.CategoryOptions" multiple size="6"></select>
+    </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Skådespelare</label>
+        <select asp-for="ActorIds" class="form-select" asp-items="ViewBag.ActorOptions" multiple size="6"></select>
+    </div>
+</div>

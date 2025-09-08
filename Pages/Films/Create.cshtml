@@ -1,0 +1,22 @@
+﻿@page
+@model RetroTapes.Pages.Films.CreateModel
+@{
+    ViewBag.LanguageOptions = Model.LanguageOptions;
+    ViewBag.CategoryOptions = Model.CategoryOptions;
+    ViewBag.ActorOptions = Model.ActorOptions;
+}
+
+<h1 class="h3 mb-3">Ny film</h1>
+<partial name="_FilmForm" model="Model.Vm" />
+
+<form method="post">
+    <partial name="_FilmForm" model="Model.Vm" />
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">Spara</button>
+        <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
