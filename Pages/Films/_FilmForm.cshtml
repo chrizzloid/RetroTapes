@@ -20,24 +20,28 @@
 
     <div class="col-md-6">
         <label asp-for="LanguageId" class="form-label">Språk</label>
-        <select asp-for="LanguageId" class="form-select" asp-items="ViewBag.LanguageOptions"></select>
+        <select asp-for="LanguageId" class="form-select" asp-items="ViewBag.LanguageOptions">
+            <option value="">Välj språk</option>
+        </select>
         <span asp-validation-for="LanguageId" class="text-danger"></span>
     </div>
 
     <div class="col-md-6">
         <label asp-for="OriginalLanguageId" class="form-label">Originalspråk (valfritt)</label>
         <select asp-for="OriginalLanguageId" class="form-select" asp-items="ViewBag.LanguageOptions">
-            <option value="">--</option>
+            <option value="">Välj Språk</option>
         </select>
     </div>
 
     <div class="col-md-6">
         <label class="form-label">Kategorier</label>
+        <small class="text-muted d-block mb-1">Tips: håll Ctrl (Cmd på Mac) för flera val.</small>   <!-- LÄGG TILL HÄR -->
         <select asp-for="CategoryIds" class="form-select" asp-items="ViewBag.CategoryOptions" multiple size="6"></select>
     </div>
 
     <div class="col-md-6">
         <label class="form-label">Skådespelare</label>
+        <small class="text-muted d-block mb-1">Tips: håll Ctrl (Cmd på Mac) för flera val.</small>   <!-- LÄGG TILL HÄR -->
         <select asp-for="ActorIds" class="form-select" asp-items="ViewBag.ActorOptions" multiple size="6"></select>
     </div>
 </div>

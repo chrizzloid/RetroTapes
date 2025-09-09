@@ -17,43 +17,45 @@ namespace RetroTapes.Services
         public async Task<(Film film, bool created)> UpsertAsync(FilmEditVm vm)
         {
             Film film;
+            var created = false;
+
             if (vm.FilmId.HasValue)
             {
                 film = await _db.Films
                     .Include(f => f.FilmCategories)
                     .Include(f => f.FilmActors)
                     .FirstOrDefaultAsync(f => f.FilmId == vm.FilmId.Value)
-                    ?? throw new KeyNotFoundException("Filmen finns ej.");
+                    ?? throw new KeyNotFoundException("Filmen finns inte.");
+
+                if (vm.LastUpdate.HasValue)
+                    _db.Entry(film).Property(x => x.LastUpdate).OriginalValue = vm.LastUpdate.Value;
             }
             else
             {
-                film = new Film { LastUpdate = DateTime.UtcNow };
+                film = new Film();
                 _db.Films.Add(film);
+                created = true;
             }
 
-            // Fält
+            // Map fält
             film.Title = vm.Title.Trim();
             film.Description = vm.Description;
             film.ReleaseYear = vm.ReleaseYear;
             film.LanguageId = vm.LanguageId;
 
-            // Shadow property OriginalLanguageId om den finns i din modell
+            // Shadow property för OriginalLanguageId om den inte finns som riktig prop
             if (vm.OriginalLanguageId.HasValue)
             {
                 var prop = _db.Entry(film).Metadata.FindProperty("OriginalLanguageId");
                 if (prop != null)
                 {
-                    _db.Entry(film).Property("OriginalLanguageId").CurrentValue = vm.OriginalLanguageId;
+                    _db.Entry(film).Property("OriginalLanguageId").CurrentValue = vm.OriginalLanguageId.Value;
                 }
             }
 
-            // Concurrency (Edit skickar LastUpdate tillbaka)
-            if (vm.LastUpdate.HasValue)
-                film.LastUpdate = vm.LastUpdate.Value;
-
-            // M:N Categories
+            // Many-to-many: kategorier
             var existingCatIds = film.FilmCategories.Select(fc => fc.CategoryId).ToHashSet();
-            var targetCatIds = vm.CategoryIds.Distinct().ToHashSet();
+            var targetCatIds = (vm.CategoryIds ?? new List<byte>()).Distinct().ToHashSet();
 
             foreach (var rm in film.FilmCategories.Where(fc => !targetCatIds.Contains(fc.CategoryId)).ToList())
                 _db.FilmCategories.Remove(rm);
@@ -61,9 +63,9 @@ namespace RetroTapes.Services
             foreach (var cid in targetCatIds.Except(existingCatIds))
                 film.FilmCategories.Add(new FilmCategory { CategoryId = cid });
 
-            // M:N Actors
+            // Many-to-many: skådespelare
             var existingActorIds = film.FilmActors.Select(fa => fa.ActorId).ToHashSet();
-            var targetActorIds = vm.ActorIds.Distinct().ToHashSet();
+            var targetActorIds = (vm.ActorIds ?? new List<int>()).Distinct().ToHashSet();
 
             foreach (var rm in film.FilmActors.Where(fa => !targetActorIds.Contains(fa.ActorId)).ToList())
                 _db.FilmActors.Remove(rm);
@@ -71,11 +73,11 @@ namespace RetroTapes.Services
             foreach (var aid in targetActorIds.Except(existingActorIds))
                 film.FilmActors.Add(new FilmActor { ActorId = aid });
 
-            // Touch
             film.LastUpdate = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();
-            return (film, !vm.FilmId.HasValue);
+            return (film, created);
         }
+
     }
 }

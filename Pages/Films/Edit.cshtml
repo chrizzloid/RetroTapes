@@ -1,21 +1,26 @@
 ﻿@page "{id:int}"
 @model RetroTapes.Pages.Films.EditModel
 @{
-    ViewBag.LanguageOptions = Model.LanguageOptions;
-    ViewBag.CategoryOptions = Model.CategoryOptions;
-    ViewBag.ActorOptions = Model.ActorOptions;
+    ViewData["Title"] = "Redigera film";
 }
 
 <h1 class="h3 mb-3">Redigera film</h1>
 
-
-<partial name="_FilmForm" model="Model.Vm" />
-
+<partial name="_Flash" />
 
 <form method="post">
     <input type="hidden" asp-for="Vm.FilmId" />
     <input type="hidden" asp-for="Vm.LastUpdate" />
+
+    @{
+        // Skicka listorna till formulär-partialen via ViewBag
+        ViewBag.LanguageOptions = Model.LanguageOptions;
+        ViewBag.CategoryOptions = Model.CategoryOptions;
+        ViewBag.ActorOptions = Model.ActorOptions;
+    }
+
     <partial name="_FilmForm" model="Model.Vm" />
+
     <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-primary">Spara</button>
         <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>

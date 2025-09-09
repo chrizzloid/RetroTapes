@@ -1,4 +1,4 @@
-using System.Linq;
+ï»¿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,7 +14,13 @@ namespace RetroTapes.Pages.Films
     {
         private readonly SakilaContext _db;
         private readonly FilmService _svc;
-        public EditModel(SakilaContext db, FilmService svc) { _db = db; _svc = svc; }
+        private readonly ILogger<EditModel> _logger;
+        public EditModel(SakilaContext db, FilmService svc, ILogger<EditModel> logger)
+        {
+            _db = db;
+            _svc = svc;
+            _logger = logger;
+        }
 
         [BindProperty] public FilmEditVm Vm { get; set; } = new();
 
@@ -26,8 +32,8 @@ namespace RetroTapes.Pages.Films
         {
             var f = await _db.Films
                 .AsNoTracking()
-                .Include(x => x.FilmCategories)
-                .Include(x => x.FilmActors)
+                .Include(x => x.FilmCategories).ThenInclude(fc => fc.Category)
+                .Include(x => x.FilmActors).ThenInclude(fa => fa.Actor)
                 .FirstOrDefaultAsync(x => x.FilmId == id);
 
             if (f == null) return NotFound();
@@ -44,12 +50,10 @@ namespace RetroTapes.Pages.Films
                 ActorIds = f.FilmActors.Select(fa => fa.ActorId).ToList()
             };
 
-            // Läs ev. shadow property OriginalLanguageId
+            // LÃ¤s shadow property 'OriginalLanguageId' om den finns
             var entry = _db.Entry(f);
             if (entry.Metadata.FindProperty("OriginalLanguageId") != null)
-            {
                 Vm.OriginalLanguageId = (byte?)entry.Property("OriginalLanguageId").CurrentValue;
-            }
 
             await PopulateDropdownsAsync();
             return Page();
@@ -66,12 +70,14 @@ namespace RetroTapes.Pages.Films
             try
             {
                 await _svc.UpsertAsync(Vm);
-                TempData["Flash"] = "? Filmen uppdaterades.";
+                _logger.LogInformation("Film {FilmId} updated by user", Vm.FilmId);
+                TempData["Flash"] = "Filmen uppdaterades.";
                 return RedirectToPage("Index");
             }
             catch (DbUpdateConcurrencyException)
             {
-                ModelState.AddModelError(string.Empty, "?? Någon annan hann ändra filmen. Granska och försök igen.");
+                _logger.LogWarning("Concurrency conflict when editing FilmId={FilmId}", Vm.FilmId);
+                ModelState.AddModelError(string.Empty, "NÃ¥gon annan hann Ã¤ndra filmen. Granska och fÃ¶rsÃ¶k igen.");
                 await PopulateDropdownsAsync();
                 return Page();
             }
@@ -79,12 +85,22 @@ namespace RetroTapes.Pages.Films
 
         private async Task PopulateDropdownsAsync()
         {
-            LanguageOptions = new SelectList(await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(), "LanguageId", "Name");
-            CategoryOptions = new MultiSelectList(await _db.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync(), "CategoryId", "Name", Vm.CategoryIds);
-            ActorOptions = new MultiSelectList(await _db.Actors.AsNoTracking().OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync(), "ActorId", "LastName", Vm.ActorIds);
-            ViewData["LanguageOptions"] = LanguageOptions;
+            LanguageOptions = new SelectList(
+                await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(),
+                "LanguageId", "Name");
+
+            CategoryOptions = new MultiSelectList(
+                await _db.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync(),
+                "CategoryId", "Name", Vm.CategoryIds);
+
+            ActorOptions = new MultiSelectList(
+                await _db.Actors.AsNoTracking().OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync(),
+                "ActorId", "LastName", Vm.ActorIds);
+
             ViewData["CategoryOptions"] = CategoryOptions;
             ViewData["ActorOptions"] = ActorOptions;
         }
+
     }
 }
+

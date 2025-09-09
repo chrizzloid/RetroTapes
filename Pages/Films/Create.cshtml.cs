@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -22,7 +22,10 @@ namespace RetroTapes.Pages.Films
         public MultiSelectList CategoryOptions { get; set; } = default!;
         public MultiSelectList ActorOptions { get; set; } = default!;
 
-        public async Task OnGetAsync() => await PopulateDropdownsAsync();
+        public async Task OnGetAsync()
+        {
+            await PopulateDropdownsAsync();
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -33,18 +36,28 @@ namespace RetroTapes.Pages.Films
             }
 
             await _svc.UpsertAsync(Vm);
-            TempData["Flash"] = "?? Filmen skapades.";
+            TempData["Flash"] = "Filmen skapades.";
             return RedirectToPage("Index");
         }
 
         private async Task PopulateDropdownsAsync()
         {
-            LanguageOptions = new SelectList(await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(), "LanguageId", "Name");
-            CategoryOptions = new MultiSelectList(await _db.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync(), "CategoryId", "Name");
-            ActorOptions = new MultiSelectList(await _db.Actors.AsNoTracking().OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync(), "ActorId", "LastName");
+            LanguageOptions = new SelectList(
+                await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(),
+                "LanguageId", "Name");
+
+            CategoryOptions = new MultiSelectList(
+                await _db.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync(),
+                "CategoryId", "Name");
+
+            ActorOptions = new MultiSelectList(
+                await _db.Actors.AsNoTracking().OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync(),
+                "ActorId", "LastName");
+
             ViewData["LanguageOptions"] = LanguageOptions;
             ViewData["CategoryOptions"] = CategoryOptions;
             ViewData["ActorOptions"] = ActorOptions;
         }
+
     }
 }

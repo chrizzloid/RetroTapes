@@ -48,7 +48,7 @@ namespace RetroTapes.Pages.Films
                 "title_desc" => query.OrderByDescending(f => f.Title),
                 "year" => query.OrderBy(f => f.ReleaseYear),
                 "year_desc" => query.OrderByDescending(f => f.ReleaseYear),
-                _ => query.OrderByDescending(f => f.LastUpdate) // default
+                _ => query.OrderByDescending(f => f.LastUpdate)
             };
 
             var total = await query.CountAsync();
@@ -75,8 +75,16 @@ namespace RetroTapes.Pages.Films
                 PageSize = pageSize
             };
 
-            CategoryOptions = new SelectList(await _db.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync(), "CategoryId", "Name");
-            LanguageOptions = new SelectList(await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(), "LanguageId", "Name");
+            CategoryOptions = new SelectList(
+                await _db.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync(),
+                "CategoryId", "Name");
+
+            LanguageOptions = new SelectList(
+                await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(),
+                "LanguageId", "Name");
         }
+
+
     }
 }
+

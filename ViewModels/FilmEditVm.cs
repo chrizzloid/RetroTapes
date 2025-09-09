@@ -13,21 +13,20 @@ namespace RetroTapes.ViewModels
 
         [StringLength(4000)]
         public string? Description { get; set; }
-
         [RegularExpression("^\\d{4}$", ErrorMessage = "Ange ett år (YYYY).")]
         public string? ReleaseYear { get; set; }
 
         [Required(ErrorMessage = "Välj språk")]
         public byte LanguageId { get; set; }
 
-        public byte? OriginalLanguageId { get; set; }   // finns i vissa Sakila-varianter
+        public byte? OriginalLanguageId { get; set; }
 
-        // Many-to-many
         public List<byte> CategoryIds { get; set; } = new();
         public List<int> ActorIds { get; set; } = new();
 
         // Concurrency
         public DateTime? LastUpdate { get; set; }
+
     }
 
     public class FilmListItemVm
