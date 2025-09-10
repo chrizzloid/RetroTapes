@@ -1,0 +1,20 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Films.DetailsModel
+@{
+    ViewData["Title"] = "Filmdetaljer";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="h4">@Model.Data.Title</h1>
+        <p class="text-muted mb-2">@Model.Data.ReleaseYear • @Model.Data.Language</p>
+        <p>@Model.Data.Description</p>
+        <p><strong>Kategorier:</strong> @Model.Data.Categories</p>
+        <p><strong>Skådespelare:</strong> @Model.Data.Actors</p>
+        <p class="text-muted"><small>Senast uppdaterad: @Model.Data.LastUpdate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</small></p>
+        <div class="d-flex gap-2">
+            <a asp-page="Edit" asp-route-id="@Model.Data.FilmId" class="btn btn-outline-primary">Redigera</a>
+            <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,132 @@
+﻿@page
+@model RetroTapes.Pages.Films.IndexModel
+@{
+    ViewData["Title"] = "Filmer";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Filmer</h1>
+    <a asp-page="Create" class="btn btn-primary">Ny film</a>
+</div>
+
+<form method="get" class="card card-body mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input class="form-control" type="search" name="q" value="@Model.q" placeholder="Sök titel eller beskrivning" />
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="categoryId" asp-items="Model.CategoryOptions">
+                <option value="">Kategori (alla)</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select class="form-select" name="languageId" asp-items="Model.LanguageOptions">
+                <option value="">Språk (alla)</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-grid">
+            <button class="btn btn-outline-secondary" type="submit">Filtrera</button>
+        </div>
+    </div>
+</form>
+
+@if (!Model.Result.Items.Any())
+{
+    <div class="alert alert-light border">
+        Inga filmer matchar din filtrering. <a asp-page="Create">Skapa den första?</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light sticky-top">
+                <tr>
+                    <th>
+                        <a asp-page="./Index"
+                           asp-route-q="@Model.q"
+                           asp-route-languageId="@Model.languageId"
+                           asp-route-categoryId="@Model.categoryId"
+                           asp-route-sort="title"
+                           asp-route-pageIndex="@Model.pageIndex"
+                           asp-route-pageSize="@Model.pageSize"
+                           class="text-decoration-none">Titel</a>
+                        <span class="text-muted">/</span>
+                        <a asp-page="./Index"
+                           asp-route-q="@Model.q"
+                           asp-route-languageId="@Model.languageId"
+                           asp-route-categoryId="@Model.categoryId"
+                           asp-route-sort="title_desc"
+                           asp-route-pageIndex="@Model.pageIndex"
+                           asp-route-pageSize="@Model.pageSize"
+                           class="text-decoration-none">▼</a>
+                    </th>
+                    <th>
+                        <a asp-page="./Index"
+                           asp-route-q="@Model.q"
+                           asp-route-languageId="@Model.languageId"
+                           asp-route-categoryId="@Model.categoryId"
+                           asp-route-sort="year"
+                           asp-route-pageIndex="@Model.pageIndex"
+                           asp-route-pageSize="@Model.pageSize"
+                           class="text-decoration-none">År</a>
+                        <span class="text-muted">/</span>
+                        <a asp-page="./Index"
+                           asp-route-q="@Model.q"
+                           asp-route-languageId="@Model.languageId"
+                           asp-route-categoryId="@Model.categoryId"
+                           asp-route-sort="year_desc"
+                           asp-route-pageIndex="@Model.pageIndex"
+                           asp-route-pageSize="@Model.pageSize"
+                           class="text-decoration-none">▼</a>
+                    </th>
+
+                    <th>Språk</th>
+                    <th>Kategorier</th>
+                    <th>Uppdaterad</th>
+                    <th class="text-end">Åtgärder</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var f in Model.Result.Items)
+                {
+                    <tr>
+                        <td>@f.Title</td>
+                        <td>@f.ReleaseYear</td>
+                        <td>@f.LanguageName</td>
+                        <td class="text-muted">@f.Categories</td>
+                        <td>@f.LastUpdate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                        <td class="text-end">
+                            <a asp-page="Details" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-secondary">Visa</a>
+                            <a asp-page="Edit" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-primary">Redigera</a>
+                            <a asp-page="Delete" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Vill du ta bort filmen?');">Ta bort</a>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <nav class="d-flex justify-content-between align-items-center">
+        <div class="text-muted">
+            Sida @Model.Result.Page av @Model.Result.TotalPages (@Model.Result.TotalCount poster)
+        </div>
+        <ul class="pagination mb-0">
+            @for (var i = 1; i <= Model.Result.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Result.Page ? "active" : "")">
+                    <a class="page-link" asp-page="./Index"
+                       asp-route-q="@Model.q"
+                       asp-route-languageId="@Model.languageId"
+                       asp-route-categoryId="@Model.categoryId"
+                       asp-route-sort="@Model.sort"
+                       asp-route-pageIndex="@i"
+                       asp-route-pageSize="@Model.pageSize">@i</a>
+                </li>
+
+            }
+        </ul>
+    </nav>
+}

@@ -1,0 +1,33 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Films.EditModel
+@{
+    ViewData["Title"] = "Redigera film";
+}
+
+<h1 class="h3 mb-3">Redigera film</h1>
+
+<partial name="_Flash" />
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Vm.FilmId" />
+    <input type="hidden" asp-for="Vm.LastUpdate" />
+
+    @{
+        ViewData["LanguageOptions"] = Model.LanguageOptions;
+        ViewData["CategoryOptions"] = Model.CategoryOptions;
+        ViewData["ActorOptions"] = Model.ActorOptions;
+    }
+    
+
+    <partial name="_FilmForm" model="Model.Vm" />
+
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">Spara</button>
+        <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
