@@ -9,15 +9,16 @@
 <partial name="_Flash" />
 
 <form method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Vm.FilmId" />
     <input type="hidden" asp-for="Vm.LastUpdate" />
 
     @{
-        // Skicka listorna till formulär-partialen via ViewBag
-        ViewBag.LanguageOptions = Model.LanguageOptions;
-        ViewBag.CategoryOptions = Model.CategoryOptions;
-        ViewBag.ActorOptions = Model.ActorOptions;
+        ViewData["LanguageOptions"] = Model.LanguageOptions;
+        ViewData["CategoryOptions"] = Model.CategoryOptions;
+        ViewData["ActorOptions"] = Model.ActorOptions;
     }
+    
 
     <partial name="_FilmForm" model="Model.Vm" />
 

@@ -43,15 +43,44 @@ else
             <thead class="table-light sticky-top">
                 <tr>
                     <th>
-                        <a asp-page="./Index" asp-route-q="@Model.q" asp-route-languageId="@Model.languageId" asp-route-categoryId="@Model.categoryId" asp-route-sort="title" class="text-decoration-none">Titel</a>
+                        <a asp-page="./Index"
+                           asp-route-q="@Model.q"
+                           asp-route-languageId="@Model.languageId"
+                           asp-route-categoryId="@Model.categoryId"
+                           asp-route-sort="title"
+                           asp-route-pageIndex="@Model.pageIndex"
+                           asp-route-pageSize="@Model.pageSize"
+                           class="text-decoration-none">Titel</a>
                         <span class="text-muted">/</span>
-                        <a asp-page="./Index" asp-route-q="@Model.q" asp-route-languageId="@Model.languageId" asp-route-categoryId="@Model.categoryId" asp-route-sort="title_desc" class="text-decoration-none">▼</a>
+                        <a asp-page="./Index"
+                           asp-route-q="@Model.q"
+                           asp-route-languageId="@Model.languageId"
+                           asp-route-categoryId="@Model.categoryId"
+                           asp-route-sort="title_desc"
+                           asp-route-pageIndex="@Model.pageIndex"
+                           asp-route-pageSize="@Model.pageSize"
+                           class="text-decoration-none">▼</a>
                     </th>
                     <th>
-                        <a asp-page="./Index" asp-route-q="@Model.q" asp-route-languageId="@Model.languageId" asp-route-categoryId="@Model.categoryId" asp-route-sort="year" class="text-decoration-none">År</a>
+                        <a asp-page="./Index"
+                           asp-route-q="@Model.q"
+                           asp-route-languageId="@Model.languageId"
+                           asp-route-categoryId="@Model.categoryId"
+                           asp-route-sort="year"
+                           asp-route-pageIndex="@Model.pageIndex"
+                           asp-route-pageSize="@Model.pageSize"
+                           class="text-decoration-none">År</a>
                         <span class="text-muted">/</span>
-                        <a asp-page="./Index" asp-route-q="@Model.q" asp-route-languageId="@Model.languageId" asp-route-categoryId="@Model.categoryId" asp-route-sort="year_desc" class="text-decoration-none">▼</a>
+                        <a asp-page="./Index"
+                           asp-route-q="@Model.q"
+                           asp-route-languageId="@Model.languageId"
+                           asp-route-categoryId="@Model.categoryId"
+                           asp-route-sort="year_desc"
+                           asp-route-pageIndex="@Model.pageIndex"
+                           asp-route-pageSize="@Model.pageSize"
+                           class="text-decoration-none">▼</a>
                     </th>
+
                     <th>Språk</th>
                     <th>Kategorier</th>
                     <th>Uppdaterad</th>
@@ -70,7 +99,9 @@ else
                         <td class="text-end">
                             <a asp-page="Details" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-secondary">Visa</a>
                             <a asp-page="Edit" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-primary">Redigera</a>
-                            <a asp-page="Delete" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-danger">Ta bort</a>
+                            <a asp-page="Delete" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Vill du ta bort filmen?');">Ta bort</a>
+
                         </td>
                     </tr>
                 }
@@ -86,15 +117,15 @@ else
             @for (var i = 1; i <= Model.Result.TotalPages; i++)
             {
                 <li class="page-item @(i == Model.Result.Page ? "active" : "")">
-                    <a class="page-link"
-                       asp-page="./Index"
+                    <a class="page-link" asp-page="./Index"
                        asp-route-q="@Model.q"
                        asp-route-languageId="@Model.languageId"
                        asp-route-categoryId="@Model.categoryId"
                        asp-route-sort="@Model.sort"
-                       asp-route-page="@i"
+                       asp-route-pageIndex="@i"
                        asp-route-pageSize="@Model.pageSize">@i</a>
                 </li>
+
             }
         </ul>
     </nav>

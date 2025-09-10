@@ -58,6 +58,34 @@ namespace RetroTapes
                     db.SaveChanges();
 
                 }
+                // --- extra seed för paginerings-test ---
+                if (!db.Films.Any())
+                {
+                    var langId = db.Languages.Select(l => l.LanguageId).First(); // t.ex. English
+                    var catId = db.Categories.Select(c => c.CategoryId).First(); // t.ex. Action
+
+                    for (int i = 1; i <= 55; i++)
+                    {
+                        var film = new Film
+                        {
+                            Title = $"Testfilm {i:D2}",
+                            Description = "Demo för pagination",
+                            ReleaseYear = "2001",
+                            LanguageId = langId,
+                            LastUpdate = DateTime.UtcNow
+                        };
+                        db.Films.Add(film);
+                        db.SaveChanges(); // behövs för att få FilmId innan vi kan skapa M:N (enkelt i dev)
+
+                        // Koppla varannan film till en kategori för att testa kategori-filter senare
+                        if (i % 2 == 1)
+                        {
+                            db.FilmCategories.Add(new FilmCategory { FilmId = film.FilmId, CategoryId = catId });
+                            db.SaveChanges();
+                        }
+                    }
+                }
+
 
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

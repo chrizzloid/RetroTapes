@@ -69,19 +69,19 @@ namespace RetroTapes.Pages.Films
 
             try
             {
-                await _svc.UpsertAsync(Vm);
-                _logger.LogInformation("Film {FilmId} updated by user", Vm.FilmId);
+                await _svc.UpsertAsync(Vm);                      // sparar
                 TempData["Flash"] = "Filmen uppdaterades.";
                 return RedirectToPage("Index");
             }
             catch (DbUpdateConcurrencyException)
             {
-                _logger.LogWarning("Concurrency conflict when editing FilmId={FilmId}", Vm.FilmId);
+                // Bra att lämna spår – hjälper felsökning
                 ModelState.AddModelError(string.Empty, "Någon annan hann ändra filmen. Granska och försök igen.");
                 await PopulateDropdownsAsync();
                 return Page();
             }
         }
+
 
         private async Task PopulateDropdownsAsync()
         {

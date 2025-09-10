@@ -28,7 +28,7 @@ namespace RetroTapes.Services
                     ?? throw new KeyNotFoundException("Filmen finns inte.");
 
                 if (vm.LastUpdate.HasValue)
-                    _db.Entry(film).Property(x => x.LastUpdate).OriginalValue = vm.LastUpdate.Value;
+                    _db.Entry(film).Property(f => f.LastUpdate).OriginalValue = vm.LastUpdate.Value;
             }
             else
             {

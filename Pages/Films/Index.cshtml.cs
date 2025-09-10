@@ -19,7 +19,7 @@ namespace RetroTapes.Pages.Films
         [BindProperty(SupportsGet = true)] public byte? categoryId { get; set; }
         [BindProperty(SupportsGet = true)] public byte? languageId { get; set; }
         [BindProperty(SupportsGet = true)] public string? sort { get; set; }
-        [BindProperty(SupportsGet = true)] public int page { get; set; } = 1;
+        [BindProperty(SupportsGet = true)] public int pageIndex { get; set; } = 1;
         [BindProperty(SupportsGet = true)] public int pageSize { get; set; } = 20;
 
         public PagedResult<FilmListItemVm> Result { get; set; } = new();
@@ -33,7 +33,8 @@ namespace RetroTapes.Pages.Films
             if (!string.IsNullOrWhiteSpace(q))
             {
                 var term = q.Trim();
-                query = query.Where(f => f.Title.Contains(term) || (f.Description != null && f.Description.Contains(term)));
+                query = query.Where(f => f.Title.Contains(term)
+                    || (f.Description != null && f.Description.Contains(term)));
             }
 
             if (languageId.HasValue)
@@ -53,9 +54,16 @@ namespace RetroTapes.Pages.Films
 
             var total = await query.CountAsync();
 
+            // Clamp page så vi inte skippas förbi slutet
+            var totalPages = (int)Math.Ceiling(total / (double)pageSize);
+            if (totalPages == 0) totalPages = 1;
+            if (pageIndex < 1) pageIndex = 1;
+            if (pageIndex > totalPages) pageIndex = totalPages;
+
             var items = await query
-                .Skip((page - 1) * pageSize)
+                .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
+
                 .Select(f => new FilmListItemVm
                 {
                     FilmId = f.FilmId,
@@ -71,7 +79,7 @@ namespace RetroTapes.Pages.Films
             {
                 Items = items,
                 TotalCount = total,
-                Page = page,
+                Page = pageIndex,
                 PageSize = pageSize
             };
 
@@ -83,6 +91,7 @@ namespace RetroTapes.Pages.Films
                 await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(),
                 "LanguageId", "Name");
         }
+
 
 
     }

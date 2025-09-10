@@ -4,16 +4,14 @@
     ViewData["Title"] = "Ta bort film";
 }
 
-<div class="alert alert-warning">
-    <h4 class="alert-heading">Vill du ta bort den här filmen?</h4>
-    <p class="mb-0"><strong>@Model.Title</strong></p>
-</div>
-
 <form method="post">
+    @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Id" />
     <input type="hidden" asp-for="LastUpdate" />
-    <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-danger">Ja, ta bort</button>
-        <a asp-page="Index" class="btn btn-outline-secondary">Avbryt</a>
-    </div>
+
+    <p>Vill du ta bort <strong>@Model.Title</strong>?</p>
+
+    <button type="submit" class="btn btn-danger">Ta bort</button>
+    <a asp-page="Index" class="btn btn-outline-secondary">Avbryt</a>
 </form>
+
