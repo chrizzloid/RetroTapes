@@ -6,8 +6,9 @@
 
 <form method="post">
     @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger mb-2"></div>
     <input type="hidden" asp-for="Id" />
-    <input type="hidden" asp-for="LastUpdate" />
+    <input type="hidden" name="LastUpdate" value="@Model.LastUpdate.ToString("O")" />
 
     <p>Vill du ta bort <strong>@Model.Title</strong>?</p>
 

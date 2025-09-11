@@ -15,10 +15,10 @@
         ViewData["CategoryOptions"] = Model.CategoryOptions;
         ViewData["ActorOptions"] = Model.ActorOptions;
     }
-   
 
 
-    <partial name="_FilmForm" model="Model.Vm" />
+
+    <partial name="_FilmForm" for="Vm" />
 
     <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-primary">Spara</button>
