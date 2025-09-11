@@ -61,11 +61,21 @@ namespace RetroTapes.Pages.Films
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (Vm.FilmId is null || Vm.FilmId <= 0)
+                return BadRequest("FilmId saknas vid uppdatering.");
+
             if (!ModelState.IsValid)
             {
+                var errors = ModelState
+                    .Where(kvp => kvp.Value?.Errors.Count > 0)
+                    .Select(kvp => $"{kvp.Key}: {string.Join(", ", kvp.Value!.Errors.Select(e => e.ErrorMessage))}");
+
+                _logger.LogWarning("Edit validation errors: {Errors}", string.Join(" | ", errors));
+
                 await PopulateDropdownsAsync();
                 return Page();
             }
+
 
             try
             {
@@ -76,7 +86,7 @@ namespace RetroTapes.Pages.Films
             catch (DbUpdateConcurrencyException)
             {
                 // Bra att lämna spår – hjälper felsökning
-                ModelState.AddModelError(string.Empty, "Någon annan hann ändra filmen. Granska och försök igen.");
+                ModelState.AddModelError(string.Empty, "Någon hann uppdatera filmen före dig. Ladda om sidan och försök igen.");
                 await PopulateDropdownsAsync();
                 return Page();
             }

@@ -8,8 +8,13 @@ namespace RetroTapes.Data
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Film>()
+    
                 .Property(f => f.LastUpdate)
-                .IsConcurrencyToken();
+    
+                .IsConcurrencyToken()
+    
+                .ValueGeneratedOnAddOrUpdate();
+
         }
     }
 }

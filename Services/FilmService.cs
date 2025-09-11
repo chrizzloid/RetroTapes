@@ -73,8 +73,6 @@ namespace RetroTapes.Services
             foreach (var aid in targetActorIds.Except(existingActorIds))
                 film.FilmActors.Add(new FilmActor { ActorId = aid });
 
-            film.LastUpdate = DateTime.UtcNow;
-
             await _db.SaveChangesAsync();
             return (film, created);
         }
