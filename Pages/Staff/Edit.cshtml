@@ -1,0 +1,56 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Staff.EditModel
+@{
+    ViewData["Title"] = "Redigera personal";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h1 class="h5 mb-0">Redigera personal</h1>
+        <span class="badge text-bg-secondary">ID @Model.Vm.StaffId</span>
+    </div>
+
+    <div class="card-body">
+        <form method="post" class="needs-validation" novalidate>
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Vm.StaffId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Vm.FirstName" class="form-label">Förnamn</label>
+                    <input asp-for="Vm.FirstName" class="form-control" autocomplete="given-name" autofocus />
+                    <span asp-validation-for="Vm.FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Vm.LastName" class="form-label">Efternamn</label>
+                    <input asp-for="Vm.LastName" class="form-control" autocomplete="family-name" />
+                    <span asp-validation-for="Vm.LastName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Vm.Email" class="form-label">E-post</label>
+                    <input asp-for="Vm.Email" class="form-control" type="email" autocomplete="email" />
+                    <span asp-validation-for="Vm.Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Vm.PhoneNumber" class="form-label">Telefon</label>
+                    <input asp-for="Vm.PhoneNumber" class="form-control" type="tel" inputmode="tel" autocomplete="tel" placeholder="+46 …" />
+                    <span asp-validation-for="Vm.PhoneNumber" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="card-footer mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Spara</button>
+                <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,29 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Staff.DetailsModel
+@{
+    ViewData["Title"] = "Detaljer";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h1 class="h5 mb-0">Personal – detaljer</h1>
+        <span class="badge text-bg-secondary">ID @Model.Vm.StaffId</span>
+    </div>
+
+    <div class="card-body">
+        <h2 class="h4 mb-3">@Model.Vm.FirstName @Model.Vm.LastName</h2>
+
+        <dl class="row mb-0">
+            <dt class="col-sm-3">E-post</dt>
+            <dd class="col-sm-9">@Model.Vm.Email</dd>
+
+            <dt class="col-sm-3">Telefon</dt>
+            <dd class="col-sm-9">@Model.Vm.PhoneNumber</dd>
+        </dl>
+    </div>
+
+    <div class="card-footer d-flex gap-2">
+        <a asp-page="Edit" asp-route-id="@Model.Vm.StaffId" class="btn btn-primary">Redigera</a>
+        <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>
+    </div>
+</div>
