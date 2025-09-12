@@ -1,0 +1,25 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Customers.DetailsModel
+@using RetroTapes.ViewModels
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h1 class="h4">@Model.Vm.Name</h1>
+        <p class="text-muted mb-2">@Model.Vm.Name • @Model.Vm.CustomerId</p>
+        <p><strong>Email:</strong> @Model.Vm.Email</p>
+        <p><strong>Aktiv:</strong> @(Model.Vm.Active ? "Aktiv" : "Inaktiv")</p>
+        <p><strong>Aktiva uthyrningar:</strong>@Model.Vm.ActiveRentalsCount</p>
+             
+        
+        <div class="d-flex gap-2">
+            <a asp-page="Edit" asp-route-id="@Model.Vm.CustomerId" class="btn btn-outline-primary">Redigera</a>
+            <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>
+        </div>
+    </div>
+</div>
+
+
