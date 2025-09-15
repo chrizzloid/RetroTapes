@@ -18,6 +18,7 @@ namespace RetroTapes
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<SakilaContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddScoped<RetroTapes.Services.FilmService>();
+            builder.Services.AddScoped<RetroTapes.Services.CustomerService>();
 
             var app = builder.Build();
 

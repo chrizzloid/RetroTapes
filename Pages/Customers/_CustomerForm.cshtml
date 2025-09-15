@@ -1,0 +1,59 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model RetroTapes.ViewModels.CustomerEditVm
+
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+<div class="row g-3">
+    <div class="col-md-8">
+        <label asp-for="FirstName" class="form-label"></label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-4">
+        <label asp-for="LastName" class="form-label"></label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+    </div>
+
+      <div class="col-md-6">
+        <label asp-for="AddressId" class="form-label"></label>
+        <select asp-for="AddressId"
+                class="form-select"
+                asp-items="@(ViewData["AddressOptions"] as IEnumerable<SelectListItem>)">
+            <option value="">Välj Address</option>
+        </select>
+        <span asp-validation-for="AddressId" class="text-danger"></span>
+
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="StoreId" class="form-label">Butik</label>
+        <select asp-for="StoreId"
+                class="form-select"
+                asp-items="@(ViewData["StoreOptions"] as IEnumerable<SelectListItem>)">
+            <option value="">Välj Butik</option>
+        </select>
+        <span asp-validation-for="StoreId" class="text-danger"></span>
+
+    </div>
+
+    <div class="col-12 form-check mt-2">
+        <input asp-for="Active" class="form-check-input" />
+        <label asp-for="Active" class="form-check-label">Aktiv kund</label>
+    </div>
+</div>
+
+
