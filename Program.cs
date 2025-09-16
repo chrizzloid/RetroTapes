@@ -19,6 +19,7 @@ namespace RetroTapes
             builder.Services.AddDbContext<SakilaContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddScoped<RetroTapes.Services.FilmService>();
             builder.Services.AddScoped<RetroTapes.Services.CustomerService>();
+            builder.Services.AddScoped<RetroTapes.Services.AddressRepository>();
 
             var app = builder.Build();
 
@@ -40,7 +41,7 @@ namespace RetroTapes
                 }
                 if (!db.Categories.Any())
                 {
-                    
+
                     db.Categories.AddRange(
                         new Category { Name = "Action", LastUpdate = DateTime.UtcNow },
                         new Category { Name = "Comedy", LastUpdate = DateTime.UtcNow },
@@ -50,7 +51,7 @@ namespace RetroTapes
                         );
 
                 }
-                if(!db.Actors.Any())
+                if (!db.Actors.Any())
                 {
                     db.Actors.AddRange(
                         new Actor { FirstName = "Tom", LastName = "Hanks", LastUpdate = DateTime.UtcNow },
