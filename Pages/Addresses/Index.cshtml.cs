@@ -9,8 +9,8 @@ namespace RetroTapes.Pages.Addresses
 {
     public class IndexModel : PageModel
     {
-        private readonly AddressRepository _repo;
-        public IndexModel(AddressRepository repo) => _repo = repo;
+        private readonly AddressService _service;
+        public IndexModel(AddressService service) => _service = service;
 
         [BindProperty(SupportsGet = true)] public string? q { get; set; }
         [BindProperty(SupportsGet = true)] public int? cityId { get; set; }
@@ -23,10 +23,10 @@ namespace RetroTapes.Pages.Addresses
 
         public async Task OnGetAsync()
         {
-            Result = await _repo.SearchAsync(q, cityId, sort, pageIndex, pageSize);
+            Result = await _service.SearchAsync(q, cityId, sort, pageIndex, pageSize);
 
             CityOptions = new SelectList(
-                await _repo.GetCitiesAsync(),
+                await _service.GetCitiesAsync(),
                 "CityId", "City1");
         }
     }

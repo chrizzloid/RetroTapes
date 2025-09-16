@@ -19,7 +19,7 @@ namespace RetroTapes
             builder.Services.AddDbContext<SakilaContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddScoped<RetroTapes.Services.FilmService>();
             builder.Services.AddScoped<RetroTapes.Services.CustomerService>();
-            builder.Services.AddScoped<RetroTapes.Services.AddressRepository>();
+            builder.Services.AddScoped<RetroTapes.Services.AddressService>();
 
             var app = builder.Build();
 

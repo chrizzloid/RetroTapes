@@ -24,6 +24,16 @@ namespace RetroTapes.ViewModels
         public string? Country { get; set; }
     }
 
+    public class AddressDetailVm
+    {
+        public int AddressId { get; set; }
+        public string? Address { get; set; }
+        public string? City { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Country { get; set; }
+        public string? Phone { get; set; }
+    }
+
     public class CityVm
     {
         public int CityId { get; set; }
