@@ -49,16 +49,16 @@ namespace RetroTapes.Pages.Addresses
             try
             {
                 await _service.UpsertAsync(Vm);
-                TempData["Flash"] = "Kund sparad.";
+                TempData["Flash"] = "Adress sparad.";
                 return RedirectToPage();
 
             }
             catch (DbUpdateConcurrencyException)
             {
                 // Bra att lämna spår – hjälper felsökning
-                ModelState.AddModelError(string.Empty, "Någon annan hann ändra filmen. Granska och försök igen.");
+                ModelState.AddModelError(string.Empty, "Någon annan hann ändra. Granska och försök igen.");
                 await PopulateDropDownAsync();
-                TempData["Flash"] = "Kund Sparad.";
+                TempData["Flash"] = "Adress Sparad.";
                 return Page();
             }
 

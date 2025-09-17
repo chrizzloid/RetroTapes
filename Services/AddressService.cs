@@ -170,5 +170,39 @@ namespace RetroTapes.Services
         }
 
 
+        public async Task<AddressDeleteVm?> GetDeleteInfoAsync(int id)
+        {
+            return await _db.Addresses
+                .AsNoTracking()
+                .Where(a => a.AddressId == id)
+                .Select(a => new AddressDeleteVm
+                {
+                    AddressId = a.AddressId,
+                    LastUpdate = a.LastUpdate,
+                    AddressName = a.Address1.ToString() + " " + a.City.City1.ToString()
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> DeleteAsync(int id, DateTime lastUpdate)
+        {
+            var entity = await _db.Addresses.FirstOrDefaultAsync(a => a.AddressId == id);
+            if (entity == null) return false;
+
+            // concurrency check
+            _db.Entry(entity).Property(e => e.LastUpdate).OriginalValue = lastUpdate;
+            _db.Addresses.Remove(entity);
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return false;
+            }
+        }
+
     }
 }

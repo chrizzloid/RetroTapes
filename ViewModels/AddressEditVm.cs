@@ -35,6 +35,13 @@ namespace RetroTapes.ViewModels
         public string? Phone { get; set; }
     }
 
+    public class AddressDeleteVm
+    {
+        public int AddressId { get; set; }
+        public DateTime LastUpdate { get; set; }
+        public string AddressName { get; set; } = "";
+    }
+
     public class CityVm
     {
         public int CityId { get; set; }
