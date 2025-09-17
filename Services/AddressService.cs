@@ -87,10 +87,11 @@ namespace RetroTapes.Services
             var cities = await _db.Cities
                 .AsNoTracking()
                 .OrderBy(c => c.City1)
+                .Include(c => c.Country)
                 .Select(c => new SelectListItem
                 {
                     Value = c.CityId.ToString(),
-                    Text = c.City1.ToString()
+                    Text = c.City1.ToString() + ", " + c.Country.Country1.ToString()
                 })
                 .ToListAsync();
             return cities;
@@ -104,8 +105,6 @@ namespace RetroTapes.Services
             if (vm.AddressId.HasValue)
             {
                 address = await _db.Addresses
-                    //.Include(f => f.FilmCategories)
-                    //.Include(f => f.FilmActors)
                     .FirstOrDefaultAsync(a => a.AddressId == vm.AddressId.Value)
                     ?? throw new KeyNotFoundException("Adressen finns inte.");
 
@@ -124,6 +123,9 @@ namespace RetroTapes.Services
             address.CityId = vm.CityId;
             address.PostalCode = vm.PostalCode;
             address.Phone = vm.Phone;
+            address.Address2 = "";
+            address.District = "";
+
 
             await _db.SaveChangesAsync();
             return (address, created);
@@ -148,6 +150,24 @@ namespace RetroTapes.Services
         }
 
 
+        public async Task<AddressEditVm?> GetEditVmAsync(int id)
+        {
+            return await _db.Addresses.AsNoTracking()
+                .Where(a => a.AddressId == id)
+                .Select(a => new AddressEditVm
+                {
+                    AddressId = a.AddressId,
+                    Address = a.Address1,
+                    PostalCode = a.PostalCode,
+                    Phone = a.Phone,
+                    CityId = a.CityId,
+
+                    LastUpdate = DateTime.UtcNow,
+                })
+                .FirstOrDefaultAsync();
+
+
+        }
 
 
     }

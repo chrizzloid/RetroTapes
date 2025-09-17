@@ -1,11 +1,11 @@
-﻿@page
-@model RetroTapes.Pages.Addresses.CreateModel
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Addresses.EditModel
 
-        @{
-        ViewData["Title"] = "Registrera ny adress";
-        }
+@{
+    ViewData["Title"] = "Redigera adress";
+}
 
-<h1 class="h3 mb-3">Ny adress</h1>
+<h1 class="h3 mb-3">Redigera adress</h1>
 
 <partial name="_Flash" />
 
@@ -13,14 +13,15 @@
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Vm.AddressId" />
     <input type="hidden" asp-for="Vm.LastUpdate" />
-
-    @* @{
-
-        ViewData["CityOptions"] = @Model.CityOptions;
-
-    } *@
-
-    <partial name="_AddressForm" for="Vm" /> 
+    
+   @{ 
+       
+       ViewData["CityOptions"] = @Model.CityOptions;
+   
+   
+   }
+  
+    <partial name="_AddressForm" for="Vm"/> @* for krävs för rätt binding dvs Vm.FirstName etc. *@
 
     <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-primary">Spara</button>
