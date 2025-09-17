@@ -1,0 +1,98 @@
+﻿@page
+@model RetroTapes.Pages.Rentals.IndexModel
+@{
+    ViewData["Title"] = "Rentals";
+}
+
+<h1>Rentals</h1>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <label class="form-label">Customer ID</label>
+        <input class="form-control" type="number" name="customerId" value="@Model.CustomerId" />
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Store ID</label>
+        <input class="form-control" type="number" name="storeId" value="@Model.StoreId" />
+    </div>
+    <div class="col-auto">
+        <label class="form-label">From</label>
+        <input class="form-control" type="date" name="from" value="@(Model.From?.ToString("yyyy-MM-dd"))" />
+    </div>
+    <div class="col-auto">
+        <label class="form-label">To</label>
+        <input class="form-control" type="date" name="to" value="@(Model.To?.ToString("yyyy-MM-dd"))" />
+    </div>
+    <div class="col-auto form-check mt-4">
+        <input class="form-check-input" type="checkbox" name="activeOnly" value="true" @(Model.ActiveOnly ? "checked" : "") />
+        <label class="form-check-label">Active only</label>
+    </div>
+    <div class="col-auto mt-4">
+        <button class="btn btn-primary" type="submit">Filter</button>
+        <a class="btn btn-outline-secondary" asp-page="./Index">Reset</a>
+    </div>
+</form>
+
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Customer</th>
+            <th>Film</th>
+            <th>Return</th>
+            <th>Staff</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var r in Model.PageData.Items)
+        {
+            <tr>
+                <td>@r.RentalId</td>
+                <td>@r.RentalDate.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>@r.Customer?.FirstName @r.Customer?.LastName (@r.CustomerId)</td>
+                <td>@r.Inventory?.Film?.Title (@r.InventoryId)</td>
+                <td>@(r.ReturnDate?.ToString("yyyy-MM-dd HH:mm") ?? "-")</td>
+                <td>@r.StaffId</td>
+                <td class="text-nowrap">
+                    @if (r.ReturnDate is null)
+                    {
+                        <a class="btn btn-sm btn-success" asp-page="./Return" asp-route-id="@r.RentalId">Mark return</a>
+                    }
+                    <a class="btn btn-sm btn-outline-primary" asp-page="./Details" asp-route-id="@r.RentalId">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.PageData.TotalCount == 0)
+{
+    <div class="alert alert-info">No rentals found.</div>
+}
+
+<nav aria-label="pager">
+    <ul class="pagination">
+        @{
+            var totalPages = (int)Math.Ceiling((double)Model.PageData.TotalCount / Model.PageData.PageSize);
+            for (int p = 1; p <= totalPages; p++)
+            {
+                var active = p == Model.PageData.Page ? "active" : "";
+                <li class="page-item @active">
+                    <a class="page-link"
+                       asp-page="./Index"
+                       asp-route-pageNo="@p"
+                       asp-route-customerId="@(Model.CustomerId)"
+                       asp-route-storeId="@(Model.StoreId)"
+                       asp-route-from="@(Model.From?.ToString("yyyy-MM-dd"))"
+                       asp-route-to="@(Model.To?.ToString("yyyy-MM-dd"))"
+                       asp-route-activeOnly="@(Model.ActiveOnly)">
+                        @p
+                    </a>
+                </li>
+                ;
+            }
+        }
+    </ul>
+</nav>

@@ -1,0 +1,40 @@
+﻿@page
+@model RetroTapes.Pages.Payments.CreateModel
+@{
+    ViewData["Title"] = "New Payment";
+}
+
+<h1>New Payment</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Vm.CustomerId" class="form-label"></label>
+        <input asp-for="Vm.CustomerId" class="form-control" />
+        <span asp-validation-for="Vm.CustomerId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Vm.RentalId" class="form-label"></label>
+        <input asp-for="Vm.RentalId" class="form-control" />
+        <span asp-validation-for="Vm.RentalId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Vm.StaffId" class="form-label"></label>
+        <input asp-for="Vm.StaffId" class="form-control" />
+        <span asp-validation-for="Vm.StaffId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Vm.Amount" class="form-label"></label>
+        <input asp-for="Vm.Amount" class="form-control" />
+        <span asp-validation-for="Vm.Amount" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-outline-secondary" asp-page="./Index">Cancel</a>
+</form>
+
+<partial name="_ValidationScriptsPartial" />
