@@ -11,7 +11,8 @@ namespace RetroTapes.ViewModels
         [StringLength(10)]
         public string? PostalCode { get; set; }
         public int CountryId { get; set; }
-
+        [StringLength(20)]
+        public string? Phone { get; set; }
         public DateTime? LastUpdate { get; set; } // Concurrency Token
     }
 
@@ -37,6 +38,6 @@ namespace RetroTapes.ViewModels
     public class CityVm
     {
         public int CityId { get; set; }
-        public string Name { get; set; } = "";
+        public string CityName { get; set; } = "";
     }
 }

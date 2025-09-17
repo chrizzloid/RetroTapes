@@ -1,0 +1,33 @@
+﻿@page
+@model RetroTapes.Pages.Addresses.CreateModel
+
+       @*  @{
+        ViewData["Title"] = "Create";
+        } *@
+
+<h1 class="h3 mb-3">Ny adress</h1>
+
+<partial name="_Flash" />
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Vm.AddressId" />
+    <input type="hidden" asp-for="Vm.LastUpdate" />
+
+    @* @{
+
+        ViewData["CityOptions"] = @Model.CityOptions;
+
+    } *@
+
+    <partial name="_AddressForm" for="Vm" /> 
+
+    <div class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">Spara</button>
+        <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

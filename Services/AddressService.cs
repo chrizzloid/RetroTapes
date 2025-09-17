@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using RetroTapes.Data;
 using RetroTapes.Infrastructure;
 using RetroTapes.Models;
@@ -13,7 +14,7 @@ namespace RetroTapes.Services
 
 
         public async Task<PagedResult<AddressListItemVm>> SearchAsync(
-    string? q, int? cityId, string? sort, int pageIndex, int pageSize)
+            string? q, int? cityId, string? sort, int pageIndex, int pageSize)
         {
             var query = _db.Addresses.Include(a => a.City).ThenInclude(c => c.Country).AsNoTracking().AsQueryable();
 
@@ -69,19 +70,31 @@ namespace RetroTapes.Services
             };
         }
 
-        public async Task<List<CityVm>> GetCitiesAsync()
+        public async Task<IEnumerable<CityVm>> GetCitiesAsync()
         {
             return await _db.Cities.AsNoTracking()
                 .OrderBy(c => c.City1)
                 .Select(c => new CityVm
                 {
                     CityId = c.CityId,
-                    Name = c.City1
+                    CityName = c.City1
                 })
                 .ToListAsync();
         }
 
-
+        public async Task<List<SelectListItem>> GetCityOptionsAsync()
+        {
+            var cities = await _db.Cities
+                .AsNoTracking()
+                .OrderBy(c => c.City1)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CityId.ToString(),
+                    Text = c.City1.ToString()
+                })
+                .ToListAsync();
+            return cities;
+        }
 
         public async Task<(Address address, bool created)> UpsertAsync(AddressEditVm vm)
         {
@@ -110,6 +123,7 @@ namespace RetroTapes.Services
             address.Address1 = vm.Address.Trim();
             address.CityId = vm.CityId;
             address.PostalCode = vm.PostalCode;
+            address.Phone = vm.Phone;
 
             await _db.SaveChangesAsync();
             return (address, created);
