@@ -1,0 +1,22 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Addresses.DeleteModel
+
+@{
+    ViewData["Title"] = "Ta bort adress";
+}
+
+<h1>Ta bort adress</h1>
+
+
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="LastUpdate" />
+    <p><strong>Ta bort:</strong>@Model.DisplayName ?</p>
+    <button type="submit" class="btn btn-danger">Ta bort</button>    
+    <a asp-page="Index" class="btn btn-outline-secondary">Avbryt</a>
+</form>
+
+<partial name="_Flash"/>
+
