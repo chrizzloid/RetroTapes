@@ -1,0 +1,39 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+
+@model RetroTapes.ViewModels.AddressEditVm 
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Address" class="form-label">Gatuadress</label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="PostalCode" class="form-label">Postnummer</label>
+        <input asp-for="PostalCode" class="form-control" />
+        <span asp-validation-for="PostalCode" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="Phone" class="form-label">Telefonnummer</label>
+        <input asp-for="Phone" class="form-control" />
+        <span asp-validation-for="Phone" class="text-danger"></span>
+
+    </div>
+
+    <div class="col-md-6">
+        <label asp-for="CityId" class="form-label">Stad</label>
+        <select asp-for="CityId" class="form-select" asp-items="@(ViewData["CityOptions"] as IEnumerable<SelectListItem>)">
+            <option value="">Välj stad</option>       
+        </select>
+        <span asp-validation-for="CityId" class="text-danger"></span>
+
+    </div>
+
+</div> 
+
+

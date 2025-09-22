@@ -19,8 +19,10 @@ namespace RetroTapes
             builder.Services.AddDbContext<SakilaContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddScoped<RetroTapes.Services.FilmService>();
             builder.Services.AddScoped<RetroTapes.Services.CustomerService>();
+            builder.Services.AddScoped<RetroTapes.Services.AddressService>();
             builder.Services.AddScoped<RetroTapes.Repositories.IRentalRepository, RetroTapes.Repositories.EfRentalRepository>();
             builder.Services.AddScoped<RetroTapes.Repositories.IPaymentRepository, RetroTapes.Repositories.EfPaymentRepository>();
+
 
             var app = builder.Build();
 
@@ -42,7 +44,7 @@ namespace RetroTapes
                 }
                 if (!db.Categories.Any())
                 {
-                    
+
                     db.Categories.AddRange(
                         new Category { Name = "Action", LastUpdate = DateTime.UtcNow },
                         new Category { Name = "Comedy", LastUpdate = DateTime.UtcNow },
@@ -52,7 +54,7 @@ namespace RetroTapes
                         );
 
                 }
-                if(!db.Actors.Any())
+                if (!db.Actors.Any())
                 {
                     db.Actors.AddRange(
                         new Actor { FirstName = "Tom", LastName = "Hanks", LastUpdate = DateTime.UtcNow },
@@ -61,7 +63,7 @@ namespace RetroTapes
                     db.SaveChanges();
 
                 }
-                // --- extra seed för paginerings-test ---
+                // --- extra seed fÃ¶r paginerings-test ---
                 if (!db.Films.Any())
                 {
                     var langId = db.Languages.Select(l => l.LanguageId).First(); // t.ex. English
@@ -72,15 +74,15 @@ namespace RetroTapes
                         var film = new Film
                         {
                             Title = $"Testfilm {i:D2}",
-                            Description = "Demo för pagination",
+                            Description = "Demo fÃ¶r pagination",
                             ReleaseYear = "2001",
                             LanguageId = langId,
                             LastUpdate = DateTime.UtcNow
                         };
                         db.Films.Add(film);
-                        db.SaveChanges(); // behövs för att få FilmId innan vi kan skapa M:N (enkelt i dev)
+                        db.SaveChanges(); // behÃ¶vs fÃ¶r att fÃ¥ FilmId innan vi kan skapa M:N (enkelt i dev)
 
-                        // Koppla varannan film till en kategori för att testa kategori-filter senare
+                        // Koppla varannan film till en kategori fÃ¶r att testa kategori-filter senare
                         if (i % 2 == 1)
                         {
                             db.FilmCategories.Add(new FilmCategory { FilmId = film.FilmId, CategoryId = catId });
