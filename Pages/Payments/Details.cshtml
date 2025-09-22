@@ -1,0 +1,28 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Payments.DetailsModel
+@{
+    ViewData["Title"] = "Payment Details";
+}
+
+<h1>Payment #@Model.Item?.PaymentId</h1>
+
+@if (Model.Item is null)
+{
+    <div class="alert alert-danger">Not found.</div>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">Date</dt>
+        <dd class="col-sm-9">@Model.Item.PaymentDate</dd>
+        <dt class="col-sm-3">Amount</dt>
+        <dd class="col-sm-9">@Model.Item.Amount.ToString("0.00")</dd>
+        <dt class="col-sm-3">Customer</dt>
+        <dd class="col-sm-9">@Model.Item.Customer?.FirstName @Model.Item.Customer?.LastName</dd>
+        <dt class="col-sm-3">Rental</dt>
+        <dd class="col-sm-9">@Model.Item.RentalId?.ToString() ?? "-"</dd>
+        <dt class="col-sm-3">Staff</dt>
+        <dd class="col-sm-9">@Model.Item.StaffId</dd>
+    </dl>
+    <a class="btn btn-outline-secondary" asp-page="./Index">Back</a>
+}
