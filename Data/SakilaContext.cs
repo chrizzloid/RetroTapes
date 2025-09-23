@@ -88,7 +88,7 @@ public partial class SakilaContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("last_name");
             entity.Property(e => e.LastUpdate)
-                .HasDefaultValueSql("(getdate())")
+                .HasDefaultValueSql("(getutcdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("last_update");
         });
@@ -306,9 +306,9 @@ public partial class SakilaContext : DbContext
                 .HasColumnName("description");
             entity.Property(e => e.LanguageId).HasColumnName("language_id");
             entity.Property(e => e.LastUpdate)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("last_update");
+            .HasColumnType("datetime")
+            .HasColumnName("last_update")
+            .IsConcurrencyToken(); // NYTT
             entity.Property(e => e.Length)
                 .HasDefaultValueSql("(NULL)")
                 .HasColumnName("length");

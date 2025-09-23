@@ -1,0 +1,16 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Rentals.ReturnModel
+@{
+    ViewData["Title"] = "Return Rental";
+}
+
+<h1>Return Rental</h1>
+
+<div class="alert alert-warning">
+    Mark rental <strong>#@Model.RentalId</strong> as returned?
+</div>
+
+<form method="post">
+    <button class="btn btn-success" type="submit">Confirm return</button>
+    <a class="btn btn-outline-secondary" asp-page="./Index">Cancel</a>
+</form>

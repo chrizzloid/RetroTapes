@@ -8,19 +8,20 @@
 
 <partial name="_Flash" />
 
-<form method="post">
+<form method="post" asp-route-id="@Model.Vm.FilmId">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Vm.FilmId" />
-    <input type="hidden" asp-for="Vm.LastUpdate" />
+    <input type="hidden" asp-for="Vm.LastUpdate" asp-format="{0:O}" />
+
 
     @{
         ViewData["LanguageOptions"] = Model.LanguageOptions;
         ViewData["CategoryOptions"] = Model.CategoryOptions;
         ViewData["ActorOptions"] = Model.ActorOptions;
     }
-    
 
-    <partial name="_FilmForm" model="Model.Vm" />
+
+    <partial name="_FilmForm" for="Vm" />
 
     <div class="d-flex gap-2 mt-3">
         <button type="submit" class="btn btn-primary">Spara</button>
