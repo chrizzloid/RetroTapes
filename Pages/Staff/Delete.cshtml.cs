@@ -1,64 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RetroTapes.Data;
-using RetroTapes.Models;
+using RetroTapes.Services;
 using StaffEntity = RetroTapes.Models.Staff;
 
 namespace RetroTapes.Pages.Staff
 {
     public class DeleteModel : PageModel
     {
-        private readonly RetroTapes.Data.SakilaContext _context;
+        private readonly SakilaContext _db; 
+        private readonly IStaffService _svc; 
+        public DeleteModel(SakilaContext db, IStaffService svc) { _db = db; _svc = svc; }
 
-        public DeleteModel(RetroTapes.Data.SakilaContext context)
+        [BindProperty] public StaffEntity Staff { get; set; } = default!;
+
+        public async Task<IActionResult> OnGetAsync(int id)
         {
-            _context = context;
+            var s = await _db.Staff.AsNoTracking()
+                .Select(x => new StaffEntity { StaffId = x.StaffId, FirstName = x.FirstName, LastName = x.LastName })
+                .FirstOrDefaultAsync(x => x.StaffId == (byte)id);
+            if (s is null) return NotFound();
+            Staff = s; return Page();
         }
 
-        [BindProperty]
-        public StaffEntity Staff { get; set; } = default!;
-
-        public async Task<IActionResult> OnGetAsync(byte? id)
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var (ok, err) = await _svc.DeleteAsync((byte)id);
+            if (!ok) { ModelState.AddModelError("", err ?? "Kunde inte ta bort."); return await OnGetAsync(id); }
 
-            var staff = await _context.Staff.FirstOrDefaultAsync(m => m.StaffId == id);
-
-            if (staff is not null)
-            {
-                Staff = staff;
-
-                return Page();
-            }
-
-            return NotFound();
-        }
-
-        public async Task<IActionResult> OnPostAsync(byte? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var staff = await _context.Staff.FindAsync(id);
-            if (staff != null)
-            {
-                Staff = staff;
-                _context.Staff.Remove(Staff);
-                await _context.SaveChangesAsync();
-            }
-            TempData["StaffFlash"] = "Anställd borttagen!";
+            TempData["StaffFlash"] = "Anställd borttagen";
             TempData["StaffFlashColor"] = "danger"; //röd
-            return RedirectToPage("./Index");
+            return RedirectToPage("Index");
         }
     }
 }

@@ -1,34 +1,14 @@
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using RetroTapes.Data;
+using RetroTapes.Services;
 using RetroTapes.ViewModels;
 
-namespace RetroTapes.Pages.Staff
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
-    {
-        private readonly SakilaContext _db;
-        public IndexModel(SakilaContext db) => _db = db;
+    private readonly IStaffService _svc;
+    public IndexModel(IStaffService svc) => _svc = svc;
 
-        public List<StaffBasicVm> Items { get; set; } = new();
-
-        public async Task OnGetAsync()
-        {
-            Items = await _db.Staff
-                .AsNoTracking()
-                .Include(s => s.Address)
-                .OrderBy(s => s.LastName).ThenBy(s => s.FirstName)
-                .Select(s => new StaffBasicVm
-                {
-                    StaffId = s.StaffId,
-                    FirstName = s.FirstName,
-                    LastName = s.LastName,
-                    Email = s.Email,
-                    PhoneNumber = s.Address != null ? s.Address.Phone : null
-                })
-                .ToListAsync();
-        }
-    }
+    public List<StaffBasicVm> Items { get; set; } = new();
+    public async Task OnGetAsync() => Items = await _svc.ListAsync();
 }
