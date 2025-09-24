@@ -20,7 +20,7 @@ else
         <dt class="col-sm-3">Film</dt>
         <dd class="col-sm-9">@Model.Item.Inventory?.Film?.Title</dd>
         <dt class="col-sm-3">Return</dt>
-        <dd class="col-sm-9">@Model.Item.ReturnDate?.ToString() ?? "-"</dd>
+        <dd class="col-sm-9">@((Model.Item.ReturnDate?.ToString()) ?? "-")</dd>
         <dt class="col-sm-3">Staff</dt>
         <dd class="col-sm-9">@Model.Item.StaffId</dd>
     </dl>

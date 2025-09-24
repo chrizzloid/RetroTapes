@@ -20,7 +20,7 @@ else
         <dt class="col-sm-3">Customer</dt>
         <dd class="col-sm-9">@Model.Item.Customer?.FirstName @Model.Item.Customer?.LastName</dd>
         <dt class="col-sm-3">Rental</dt>
-        <dd class="col-sm-9">@Model.Item.RentalId?.ToString() ?? "-"</dd>
+        <dd class="col-sm-9">@((Model.Item.RentalId?.ToString()) ?? "-")</dd>
         <dt class="col-sm-3">Staff</dt>
         <dd class="col-sm-9">@Model.Item.StaffId</dd>
     </dl>
