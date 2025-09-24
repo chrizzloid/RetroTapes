@@ -1,0 +1,25 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Addresses.DetailsModel
+@using RetroTapes.ViewModels
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="card">
+    <div class="card-body">
+        @* <h1 class="h4">@Model.Vm.Address</h1> *@
+        <p><strong>Gata:</strong> @Model.Vm.Address</p>
+        <p><strong>Stad:</strong> @Model.Vm.City</p>
+        <p><strong>Postkod:</strong> @Model.Vm.PostalCode</p>
+        <p><strong>Land:</strong> @Model.Vm.Country</p>
+        <p><strong>Telefonnummer:</strong> @Model.Vm.Phone</p>
+
+             
+        
+        <div class="d-flex gap-2">
+            <a asp-page="Edit" asp-route-id="@Model.Vm.AddressId" class="btn btn-outline-primary">Redigera</a>
+            <a asp-page="Index" class="btn btn-outline-secondary">Tillbaka</a>
+        </div>
+    </div>
+</div>
