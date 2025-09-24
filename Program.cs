@@ -21,6 +21,7 @@ namespace RetroTapes
             builder.Services.AddScoped<RetroTapes.Services.FilmService>();
             builder.Services.AddScoped<IStaffService, StaffService>();
             builder.Services.AddScoped<RetroTapes.Services.CustomerService>();
+
             builder.Services.AddScoped<RetroTapes.Services.AddressService>();
             builder.Services.AddScoped<RetroTapes.Repositories.IRentalRepository, RetroTapes.Repositories.EfRentalRepository>();
             builder.Services.AddScoped<RetroTapes.Repositories.IPaymentRepository, RetroTapes.Repositories.EfPaymentRepository>();
