@@ -39,13 +39,14 @@ namespace RetroTapes.ViewModels
         public string? Email { get; set; }
         public bool Active { get; set; }
         public int ActiveRentalsCount { get; set; }
-
-        //public IList<RentalItemVm> ActiveRentals { get; set; } = new List<RentalItemVm>(); // För att kunna visa ev aktiva hyror dvs, ej återlämnad. 
-        // public IList<PaymentItemVm> Payments { get; set; } = new List<PaymentItemVm>(); // För att kunna visa betalningar för hyror framåt
+    }
 
 
-
-
+    public class CustomerDeleteVm
+    {
+        public int CustomerId { get; set; }
+        public string Name { get; set; } = " ";
+        public DateTime LastUpdate { get; set; } // Concurrency Token
     }
 
 

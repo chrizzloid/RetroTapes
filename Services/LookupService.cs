@@ -17,5 +17,11 @@ namespace RetroTapes.Services
 
         public Task<List<Actor>> GetActorsAsync() =>
             _db.Actors.AsNoTracking().OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync();
+
+        public Task<List<Address>> GetAddressesAsync() =>
+            _db.Addresses.AsNoTracking().OrderBy(a => a.Address1).ThenBy(a => a.AddressId).ToListAsync();
+
+        public Task<List<Store>> GetStoresAsync() =>
+            _db.Stores.AsNoTracking().OrderBy(s => s.StoreId).ToListAsync();
     }
 }
