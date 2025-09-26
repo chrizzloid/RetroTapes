@@ -15,11 +15,13 @@ namespace RetroTapes.Pages.Films
         private readonly SakilaContext _db;
         private readonly FilmService _svc;
         private readonly ILogger<EditModel> _logger;
-        public EditModel(SakilaContext db, FilmService svc, ILogger<EditModel> logger)
+        private readonly IInventoryService _inv;
+        public EditModel(SakilaContext db, FilmService svc, ILogger<EditModel> logger, IInventoryService inv)
         {
             _db = db;
             _svc = svc;
             _logger = logger;
+            _inv = inv;
         }
 
         [BindProperty] public FilmEditVm Vm { get; set; } = new();
@@ -47,13 +49,17 @@ namespace RetroTapes.Pages.Films
                 LanguageId = f.LanguageId,
                 LastUpdate = f.LastUpdate,
                 CategoryIds = f.FilmCategories.Select(fc => fc.CategoryId).ToList(),
-                ActorIds = f.FilmActors.Select(fa => fa.ActorId).ToList()
+                ActorIds = f.FilmActors.Select(fa => fa.ActorId).ToList(),
+
+                StoreId = Vm.StoreId == 0 ? (byte)1 : Vm.StoreId
             };
 
             // Läs shadow property 'OriginalLanguageId' om den finns
             var entry = _db.Entry(f);
             if (entry.Metadata.FindProperty("OriginalLanguageId") != null)
                 Vm.OriginalLanguageId = (byte?)entry.Property("OriginalLanguageId").CurrentValue;
+
+            var onHandMap = await _inv.GetOnHandForFilmsAsync(new[] { (short)f.FilmId });
 
             await PopulateDropdownsAsync();
             return Page();
@@ -79,7 +85,13 @@ namespace RetroTapes.Pages.Films
 
             try
             {
-                await _svc.UpsertAsync(Vm);                      // sparar
+                await _svc.UpsertAsync(Vm);     // sparar
+
+                if (Vm.StockDesired is int desired)
+                {
+                    await _inv.SetFilmStockAsync((short)Vm.FilmId, Vm.StoreId == 0 ? (byte)1 : Vm.StoreId, desired);
+                }
+
                 TempData["Flash"] = "Filmen uppdaterades.";
                 return RedirectToPage("Index");
             }

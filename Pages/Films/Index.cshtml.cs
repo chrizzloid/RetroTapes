@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RetroTapes.Data;
 using RetroTapes.Infrastructure;
+using RetroTapes.Services;
 using RetroTapes.ViewModels;
 
 namespace RetroTapes.Pages.Films
@@ -13,7 +14,13 @@ namespace RetroTapes.Pages.Films
     public class IndexModel : PageModel
     {
         private readonly SakilaContext _db;
-        public IndexModel(SakilaContext db) => _db = db;
+        private readonly IInventoryService _inventoryService;
+        
+        public IndexModel(SakilaContext db, IInventoryService inventoryService)
+        {             
+            _db = db;
+            _inventoryService = inventoryService;
+        }
 
         [BindProperty(SupportsGet = true)] public string? q { get; set; }
         [BindProperty(SupportsGet = true)] public byte? categoryId { get; set; }
@@ -21,6 +28,8 @@ namespace RetroTapes.Pages.Films
         [BindProperty(SupportsGet = true)] public string? sort { get; set; }
         [BindProperty(SupportsGet = true)] public int pageIndex { get; set; } = 1;
         [BindProperty(SupportsGet = true)] public int pageSize { get; set; } = 20;
+
+        public Dictionary<short, int> OnHandMap { get; set; } = new();
 
         public PagedResult<FilmListItemVm> Result { get; set; } = new();
         public SelectList CategoryOptions { get; set; } = default!;
@@ -74,6 +83,9 @@ namespace RetroTapes.Pages.Films
                     LastUpdate = f.LastUpdate
                 })
                 .ToListAsync();
+
+            var filmIds = items.Select(i => (short)i.FilmId).ToArray();
+            OnHandMap = await _inventoryService.GetOnHandForFilmsAsync(filmIds);
 
             Result = new PagedResult<FilmListItemVm>
             {

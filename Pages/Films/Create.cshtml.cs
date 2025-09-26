@@ -14,7 +14,8 @@ namespace RetroTapes.Pages.Films
     {
         private readonly SakilaContext _db;
         private readonly FilmService _svc;
-        public CreateModel(SakilaContext db, FilmService svc) { _db = db; _svc = svc; }
+        private readonly IInventoryService _inv;
+        public CreateModel(SakilaContext db, FilmService svc, IInventoryService inv) { _db = db; _svc = svc; _inv = inv; }
 
         [BindProperty] public FilmEditVm Vm { get; set; } = new();
 
@@ -36,6 +37,20 @@ namespace RetroTapes.Pages.Films
             }
 
             await _svc.UpsertAsync(Vm);
+            short filmId = (short)(Vm.FilmId > 0
+                ? (short)Vm.FilmId
+                : await _db.Films
+                    .Where(f => f.Title == Vm.Title && f.ReleaseYear == Vm.ReleaseYear)
+                    .OrderByDescending(f => f.LastUpdate)
+                    .Select(f => f.FilmId)
+                    .FirstAsync());
+
+            Vm.FilmId = filmId;
+            if (Vm.StockDesired is int desired)
+            {
+                await _inv.SetFilmStockAsync((short)Vm.FilmId, Vm.StoreId, desired);
+            }
+
             TempData["Flash"] = "Filmen skapades.";
             return RedirectToPage("Index");
         }
