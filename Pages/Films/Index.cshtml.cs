@@ -9,8 +9,6 @@ namespace RetroTapes.Pages.Films
 {
     public class IndexModel : PageModel
     {
-        //private readonly SakilaContext _db;
-        //public IndexModel(SakilaContext db) => _db = db;
         private readonly LookupService _lookups;
         private readonly FilmService _svc;
 
@@ -30,71 +28,12 @@ namespace RetroTapes.Pages.Films
 
         public async Task OnGetAsync()
         {
-            //var query = _db.Films.AsNoTracking().AsQueryable();
-
-            //if (!string.IsNullOrWhiteSpace(q))
-            //{
-            //    var term = q.Trim();
-            //    query = query.Where(f => f.Title.Contains(term)
-            //        || (f.Description != null && f.Description.Contains(term)));
-            //}
-
-            //if (languageId.HasValue)
-            //    query = query.Where(f => f.LanguageId == languageId.Value);
-
-            //if (categoryId.HasValue)
-            //    query = query.Where(f => f.FilmCategories.Any(fc => fc.CategoryId == categoryId.Value));
-
-            //query = sort switch
-            //{
-            //    "title" => query.OrderBy(f => f.Title),
-            //    "title_desc" => query.OrderByDescending(f => f.Title),
-            //    "year" => query.OrderBy(f => f.ReleaseYear),
-            //    "year_desc" => query.OrderByDescending(f => f.ReleaseYear),
-            //    _ => query.OrderByDescending(f => f.LastUpdate)
-            //};
-
-            //var total = await query.CountAsync();
-
-            //// Clamp page så vi inte skippas förbi slutet
-            //var totalPages = (int)Math.Ceiling(total / (double)pageSize);
-            //if (totalPages == 0) totalPages = 1;
-            //if (pageIndex < 1) pageIndex = 1;
-            //if (pageIndex > totalPages) pageIndex = totalPages;
-
-            //var items = await query
-            //    .Skip((pageIndex - 1) * pageSize)
-            //    .Take(pageSize)
-
-            //    .Select(f => new FilmListItemVm
-            //    {
-            //        FilmId = f.FilmId,
-            //        Title = f.Title,
-            //        ReleaseYear = f.ReleaseYear,
-            //        LanguageName = f.Language.Name,
-            //        Categories = string.Join(", ", f.FilmCategories.Select(fc => fc.Category.Name).OrderBy(n => n)),
-            //        LastUpdate = f.LastUpdate
-            //    })
-            //    .ToListAsync();
-
-            //Result = new PagedResult<FilmListItemVm>
-            //{
-            //    Items = items,
-            //    TotalCount = total,
-            //    Page = pageIndex,
-            //    PageSize = pageSize
-            //};
-
             Result = await _svc.SearchAsync(q, languageId, categoryId, sort, pageIndex, pageSize);
 
             CategoryOptions = new SelectList(
-                //await _db.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync(),
-                //"CategoryId", "Name");
                 await _lookups.GetCategoriesAsync(), "CategoryId", "Name");
 
             LanguageOptions = new SelectList(
-                //await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(),
-                //"LanguageId", "Name");
                 await _lookups.GetLanguagesAsync(), "LanguageId", "Name");
         }
 

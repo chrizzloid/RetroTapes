@@ -134,5 +134,66 @@ namespace RetroTapes.Services
 
         }
 
+        internal async Task<FilmEditVm?> GetEditVmAsync(int id)
+        {
+            return await _db.Films
+                .AsNoTracking()
+                .Where(f => f.FilmId == id)
+                .Select(f => new FilmEditVm
+                {
+                    FilmId = f.FilmId,
+                    Title = f.Title,
+                    Description = f.Description,
+                    ReleaseYear = f.ReleaseYear,
+                    LanguageId = f.LanguageId,
+                    LastUpdate = f.LastUpdate,
+                    CategoryIds = f.FilmCategories.Select(fc => fc.CategoryId).ToList(),
+                    ActorIds = f.FilmActors.Select(fa => fa.ActorId).ToList(),
+                    OriginalLanguageId = f.OriginalLanguageId
+
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        internal async Task<FilmDetailVm?> GetDeatailAsync(int id)
+        {
+            return await _db.Films
+                .AsNoTracking()
+                .Where(x => x.FilmId == id)
+                .Select(x => new FilmDetailVm
+                {
+                    FilmId = x.FilmId,
+                    Title = x.Title,
+                    Description = x.Description,
+                    ReleaseYear = x.ReleaseYear,
+                    Language = x.Language.Name,
+                    Categories = string.Join(", ", x.FilmCategories.Select(fc => fc.Category.Name).OrderBy(n => n)),
+                    Actors = string.Join(", ", x.FilmActors.Select(fa => fa.Actor.FirstName + " " + fa.Actor.LastName).OrderBy(n => n)),
+                    LastUpdate = x.LastUpdate
+                })
+                .FirstOrDefaultAsync();
+
+        }
+
+        internal async Task<bool> DeleteAsync(int id, DateTime lastUpdate)
+        {
+            // kolla inventory
+            if (await _db.Inventories.AnyAsync(inv => inv.FilmId == id))
+                return false;
+
+            // rensa M:N relationer
+            _db.FilmCategories.RemoveRange(_db.FilmCategories.Where(fc => fc.FilmId == id));
+            _db.FilmActors.RemoveRange(_db.FilmActors.Where(fa => fa.FilmId == id));
+
+            // concurrency check
+            var film = new Film { FilmId = id, LastUpdate = lastUpdate };
+            _db.Entry(film).Property(f => f.LastUpdate).OriginalValue = lastUpdate;
+
+            _db.Films.Attach(film);
+            _db.Films.Remove(film);
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
     }
 }
