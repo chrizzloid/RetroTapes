@@ -19,5 +19,6 @@ namespace RetroTapes.Repositories
         Task AddAsync(Payment payment, CancellationToken ct = default);
         Task UpdateAsync(Payment payment, CancellationToken ct = default);
         Task DeleteAsync(Payment payment, CancellationToken ct = default);
+        Task CreatePaymentAsync(int customerId, int? rentalId, byte staffId, decimal amount);
     }
 }
