@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RetroTapes.Data;
 using RetroTapes.Models;
+using RetroTapes.Services;
 
 namespace RetroTapes
 {
@@ -18,6 +19,7 @@ namespace RetroTapes
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<SakilaContext>(options => options.UseSqlServer(connectionString));
             builder.Services.AddScoped<RetroTapes.Services.FilmService>();
+            builder.Services.AddScoped<IStaffService, StaffService>();
             builder.Services.AddScoped<RetroTapes.Services.CustomerService>();
 
             builder.Services.AddScoped<RetroTapes.Services.AddressService>();
