@@ -18,6 +18,7 @@ namespace RetroTapes
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddDbContext<SakilaContext>(options => options.UseSqlServer(connectionString));
+            builder.Services.AddScoped<RetroTapes.Services.LookupService>();
             builder.Services.AddScoped<RetroTapes.Services.FilmService>();
             builder.Services.AddScoped<IStaffService, StaffService>();
             builder.Services.AddScoped<RetroTapes.Services.CustomerService>();

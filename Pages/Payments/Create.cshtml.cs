@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RetroTapes.Data;
-using RetroTapes.Models;
 using RetroTapes.Repositories;
 
 namespace RetroTapes.Pages.Payments
@@ -10,9 +9,9 @@ namespace RetroTapes.Pages.Payments
     public class CreateModel : PageModel
     {
         private readonly IPaymentRepository _repo;
-        private readonly SakilaContext _db; // för SaveChanges
+        //private readonly SakilaContext _db; // för SaveChanges
         public CreateModel(IPaymentRepository repo, SakilaContext db)
-        { _repo = repo; _db = db; }
+        { _repo = repo; }
 
         public class PaymentVm
         {
@@ -30,17 +29,7 @@ namespace RetroTapes.Pages.Payments
         {
             if (!ModelState.IsValid) return Page();
 
-            var p = new Payment
-            {
-                CustomerId = Vm.CustomerId,
-                RentalId = Vm.RentalId,
-                StaffId = Vm.StaffId,
-                Amount = Vm.Amount,
-                PaymentDate = DateTime.UtcNow
-            };
-
-            await _repo.AddAsync(p);
-            await _db.SaveChangesAsync(); // spara
+            await _repo.CreatePaymentAsync(Vm.CustomerId, Vm.RentalId, Vm.StaffId, Vm.Amount);
 
             TempData["Flash"] = "Payment created.";
             return RedirectToPage("./Index");

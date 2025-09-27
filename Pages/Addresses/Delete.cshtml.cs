@@ -23,7 +23,6 @@ namespace RetroTapes.Pages.Addresses
             var address = await _service.GetDeleteInfoAsync(id);
             if (address == null) return NotFound();
 
-
             Id = address.AddressId;
             LastUpdate = address.LastUpdate;
             DisplayName = address.AddressName;
