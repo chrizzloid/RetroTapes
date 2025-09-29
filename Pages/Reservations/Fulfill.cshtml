@@ -1,0 +1,19 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Reservations.FulfillModel
+@{
+    ViewData["Title"] = "Utlämna bokning";
+}
+<h1>Utlämna bokning</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <p>Gör om bokning <strong>#@Model.Id</strong> till en uthyrning.</p>
+    <div class="mb-3">
+        <label asp-for="StaffId" class="form-label"></label>
+        <input asp-for="StaffId" class="form-control" />
+        <span class="form-text">Vilken personal (StaffId) hanterar utlämningen?</span>
+        <span asp-validation-for="StaffId" class="text-danger"></span>
+    </div>
+    <button class="btn btn-primary" type="submit">Utlämna</button>
+    <a class="btn btn-outline-secondary" asp-page="./Index">Tillbaka</a>
+</form>

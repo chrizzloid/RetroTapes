@@ -1,0 +1,84 @@
+﻿@page
+@model RetroTapes.Pages.Reservations.IndexModel
+@{
+    ViewData["Title"] = "Bokningar";
+}
+
+<h1>Bokningar</h1>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto">
+        <label class="form-label">Customer ID</label>
+        <input class="form-control" type="number" name="customerId" value="@Model.CustomerId" />
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Inventory ID</label>
+        <input class="form-control" type="number" name="inventoryId" value="@Model.InventoryId" />
+    </div>
+    <div class="col-auto">
+        <label class="form-label">Status</label>
+        <select class="form-select" name="status">
+            <option value="">(All)</option>
+            @foreach (var s in Model.AllStatuses)
+            {
+                if (Model.Status.HasValue && Model.Status.Value == s)
+                {
+                    <option value="@((int)s)" selected>@s</option>
+                }
+                else
+                {
+                    <option value="@((int)s)">@s</option>
+                }
+            }
+
+        </select>
+    </div>
+    <div class="col-auto mt-4">
+        <button class="btn btn-primary" type="submit">Filter</button>
+        <a class="btn btn-outline-secondary" asp-page="./Index">Reset</a>
+    </div>
+    <div class="col-auto mt-4">
+        <a class="btn btn-success" asp-page="./Create">Ny bokning</a>
+    </div>
+</form>
+
+<table class="table table-striped table-sm">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Customer</th>
+        <th>Inventory / Film</th>
+        <th>Reserved</th>
+        <th>Expires</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var r in Model.PageData.Items)
+    {
+        <tr>
+            <td>@r.ReservationId</td>
+            <td>@r.CustomerId (@r.Customer?.FirstName @r.Customer?.LastName)</td>
+            <td>@r.InventoryId @(" / ") @r.Inventory?.Film?.Title</td>
+            <td>@r.ReservedAt.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@r.ExpiresAt.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@r.Status</td>
+            <td class="text-nowrap">
+                @if (r.Status == RetroTapes.Models.ReservationStatus.Active && r.ExpiresAt > DateTime.UtcNow)
+                {
+                   <a class="btn btn-sm btn-primary" asp-page="./Fulfill" asp-route-id="@r.ReservationId">Utlämna</a>
+<a class="btn btn-sm btn-outline-danger" asp-page="./Cancel" asp-route-id="@r.ReservationId">Avboka</a>
+                }
+                    <a class="btn btn-sm btn-outline-secondary" asp-page="./Details" asp-route-id="@r.ReservationId">Detaljer</a>
+
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@if (Model.PageData.TotalCount == 0)
+{
+    <div class="alert alert-info">No reservations found.</div>
+}

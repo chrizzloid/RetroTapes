@@ -1,0 +1,17 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Reservations.CancelModel
+@{
+    ViewData["Title"] = "Avboka";
+}
+<h1>Avboka</h1>
+<div class="alert alert-warning">
+    Avboka bokning <strong>#@Model.Id</strong>?
+</div>
+
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <button class="btn btn-danger" type="submit">Bekräfta</button>
+    <a class="btn btn-outline-secondary" asp-page="./Index">Tillbaka</a>
+
+</form>

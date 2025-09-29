@@ -1,0 +1,36 @@
+﻿@page
+@model RetroTapes.Pages.Reservations.CreateModel
+@{
+    ViewData["Title"] = "Ny bokning";
+}
+
+<h1>Ny bokning</h1>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="Vm.CustomerId" class="form-label"></label>
+        <input asp-for="Vm.CustomerId" class="form-control" />
+        <span asp-validation-for="Vm.CustomerId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Vm.InventoryId" class="form-label"></label>
+        <input asp-for="Vm.InventoryId" class="form-control" />
+        <span asp-validation-for="Vm.InventoryId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Vm.HoldHours" class="form-label"></label>
+        <input asp-for="Vm.HoldHours" class="form-control" />
+        <span class="form-text">Hur många timmar reservationen ska gälla (1–72). Standard 24.</span>
+        <span asp-validation-for="Vm.HoldHours" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Spara</button>
+    <a class="btn btn-outline-secondary" asp-page="./Index">Avbryt</a>
+
+</form>
+
+<partial name="_ValidationScriptsPartial" />
