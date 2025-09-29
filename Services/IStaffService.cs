@@ -1,5 +1,4 @@
-﻿using RetroTapes.Infrastructure;
-using RetroTapes.ViewModels;
+﻿using RetroTapes.ViewModels;
 
 namespace RetroTapes.Services
 {
@@ -10,6 +9,6 @@ namespace RetroTapes.Services
         Task<(bool ok, string? error, byte id)> CreateAsync(StaffBasicVm vm, CancellationToken ct = default);
         Task<(bool ok, string? error)> UpdateAsync(StaffBasicVm vm, CancellationToken ct = default);
         Task<(bool ok, string? error)> DeleteAsync(byte id, CancellationToken ct = default);
-
+        Task<StaffBasicVm?> GetDeatailAsync(int id);
     }
 }
