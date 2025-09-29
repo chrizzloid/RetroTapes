@@ -27,6 +27,8 @@ namespace RetroTapes
             builder.Services.AddScoped<RetroTapes.Repositories.IRentalRepository, RetroTapes.Repositories.EfRentalRepository>();
             builder.Services.AddScoped<RetroTapes.Repositories.IPaymentRepository, RetroTapes.Repositories.EfPaymentRepository>();
 
+            builder.Services.AddScoped<IInventoryService, InventoryService>();
+
 
             var app = builder.Build();
 

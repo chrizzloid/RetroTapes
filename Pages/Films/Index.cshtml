@@ -84,6 +84,7 @@ else
                     <th>Språk</th>
                     <th>Kategorier</th>
                     <th>Uppdaterad</th>
+                    <th>I lager</th>
                     <th class="text-end">Åtgärder</th>
                 </tr>
             </thead>
@@ -96,6 +97,13 @@ else
                         <td>@f.LanguageName</td>
                         <td class="text-muted">@f.Categories</td>
                         <td>@f.LastUpdate.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            @{
+                                var fid = (short)f.FilmId;
+                                var onHand = Model.OnHandMap.TryGetValue(fid, out var v) ? v : 0;
+                            }
+                            @($"{onHand} st")
+                        </td>
                         <td class="text-end">
                             <a asp-page="Details" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-secondary">Visa</a>
                             <a asp-page="Edit" asp-route-id="@f.FilmId" class="btn btn-sm btn-outline-primary">Redigera</a>

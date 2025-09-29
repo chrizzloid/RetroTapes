@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +12,14 @@ namespace RetroTapes.Pages.Films
         private readonly FilmService _svc;
         private readonly ILogger<EditModel> _logger;
         private readonly LookupService _lookups;
-        public EditModel(FilmService svc, ILogger<EditModel> logger, LookupService lookups)
+        private readonly IInventoryService _inv;
+
+        public EditModel(FilmService svc, ILogger<EditModel> logger, LookupService lookups, IInventoryService inv)
         {
             _svc = svc;
             _logger = logger;
             _lookups = lookups;
+            _inv = inv;
         }
 
         [BindProperty] public FilmEditVm Vm { get; set; } = new();
@@ -28,14 +31,14 @@ namespace RetroTapes.Pages.Films
         public async Task<IActionResult> OnGetAsync(int id)
         {
             var vm = await _svc.GetEditVmAsync(id);
+            if (vm == null) return NotFound();
 
-            if (vm == null)
-            {
-                return NotFound();
-            }
+            var map = await _inv.GetOnHandForFilmsAsync(new[] { (short)vm.FilmId });
+            vm.StockDesired = map.TryGetValue((short)vm.FilmId, out var val) ? val : 0;
+
+            Vm = vm;
 
             await PopulateDropdownsAsync();
-            Vm = vm;
             return Page();
         }
 
@@ -49,29 +52,32 @@ namespace RetroTapes.Pages.Films
                 var errors = ModelState
                     .Where(kvp => kvp.Value?.Errors.Count > 0)
                     .Select(kvp => $"{kvp.Key}: {string.Join(", ", kvp.Value!.Errors.Select(e => e.ErrorMessage))}");
-
                 _logger.LogWarning("Edit validation errors: {Errors}", string.Join(" | ", errors));
 
                 await PopulateDropdownsAsync();
                 return Page();
             }
 
-
             try
             {
-                await _svc.UpsertAsync(Vm);                      // sparar
+                await _svc.UpsertAsync(Vm);
+
+                if (Vm.StockDesired is int desired)
+                {
+                    var store = Vm.StoreId == 0 ? (byte)1 : Vm.StoreId;
+                    await _inv.SetFilmStockAsync((short)Vm.FilmId, store, desired);
+                }
+
                 TempData["Flash"] = "Filmen uppdaterades.";
                 return RedirectToPage("Index");
             }
             catch (DbUpdateConcurrencyException)
             {
-                // Bra att lämna spår – hjälper felsökning
                 ModelState.AddModelError(string.Empty, "Någon hann uppdatera filmen före dig. Ladda om sidan och försök igen.");
                 await PopulateDropdownsAsync();
                 return Page();
             }
         }
-
 
         private async Task PopulateDropdownsAsync()
         {
@@ -87,7 +93,5 @@ namespace RetroTapes.Pages.Films
             ViewData["CategoryOptions"] = CategoryOptions;
             ViewData["ActorOptions"] = ActorOptions;
         }
-
     }
 }
-
