@@ -117,7 +117,7 @@ namespace RetroTapes
             app.UseSession();
             app.UseAuthorization();
 
-
+            app.UseStaticFiles();
             app.MapStaticAssets();
             app.MapRazorPages()
                .WithStaticAssets();

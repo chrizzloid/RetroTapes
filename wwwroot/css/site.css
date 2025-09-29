@@ -3,23 +3,77 @@ html {
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 14px;
+        position: relative;
+        min-height: 100%;
+    }
+
+    @media (min-width: 768px) {
+        html {
+            font-size: 16px;
+        }
+    }
+
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Poppins', sans-serif
+    color: #2d1f14;
+    margin-bottom: 60px;
 }
+
+
+.navbar {
+    background-color: #f2e3c6 !important;
+    border-bottom: 4px solid #2d1f14;
+    box-shadow: none;
+}
+
+.navbar-brand img {
+    height: 50px;
+}
+
+.nav-link {
+    color: #2d1f14 !important;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+    .nav-link:hover {
+        color: #d4472c !important;
+        text-decoration: underline;
+    }
+
+footer {
+    background-color: #f2e3c6;
+    border-top: 2px solid #2d1f14;
+    color: #2d1f14;
+    padding-top: 10px;
+}
+
+.badge {
+    background-color: #d4472c !important;
+    color: white;
+    font-family: monospace;
+}
+
+.btn-outline-secondary {
+    border-color: #2d1f14;
+    color: #2d1f14;
+}
+
+    .btn-outline-secondary:hover {
+        background-color: #d4472c;
+        color: #fff;
+        border-color: #d4472c;
+    }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
   color: var(--bs-secondary-color);
