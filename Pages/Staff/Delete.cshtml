@@ -1,0 +1,28 @@
+﻿@page "{id:int}"
+@model RetroTapes.Pages.Staff.DeleteModel
+@{
+    ViewData["Title"] = "Ta bort personal";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h1 class="h5 mb-0">Ta bort personal</h1>
+        <span class="badge text-bg-secondary">ID @Model.Staff.StaffId</span>
+    </div>
+
+    <div class="card-body">
+        <p class="mb-0">
+            Är du säker på att du vill ta bort
+            <strong>@Model.Staff.FirstName @Model.Staff.LastName</strong>?
+        </p>
+    </div>
+
+    <div class="card-footer d-flex gap-2">
+        <form method="post" class="m-0">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Staff.StaffId" />
+            <button type="submit" class="btn btn-danger">Ta bort</button>
+        </form>
+        <a asp-page="Index" class="btn btn-outline-secondary">Avbryt</a>
+    </div>
+</div>

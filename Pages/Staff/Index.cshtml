@@ -1,0 +1,57 @@
+﻿@page
+@model RetroTapes.Pages.Staff.IndexModel
+@{
+    ViewData["Title"] = "Personal";
+}
+@{
+    var msg = TempData["StaffFlash"] as string;
+    var color = (TempData["StaffFlashColor"] as string) ?? "success"; // Färg för alert
+}
+@if (!string.IsNullOrWhiteSpace(msg))
+{
+    <div class="alert alert-@color alert-dismissible fade show" role="alert">
+        @msg
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Stäng"></button>
+    </div>
+}
+
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Personal</h1>
+    <a asp-page="Create" class="btn btn-primary">Lägg till ny personal</a>
+</div>
+
+@if (!Model.Items.Any())
+{
+    <div class="alert alert-light border">Ingen personal registrerad ännu.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Namn</th>
+                    <th>E-post</th>
+                    <th>Telefon</th>
+                    <th class="text-end">Åtgärder</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in Model.Items)
+                {
+                    <tr>
+                        <td>@s.LastName, @s.FirstName</td>
+                        <td>@s.Email</td>
+                        <td>@s.PhoneNumber</td>
+                        <td class="text-end">
+                            <a asp-page="Details" asp-route-id="@s.StaffId" class="btn btn-sm btn-outline-secondary">Visa</a>
+                            <a asp-page="Edit" asp-route-id="@s.StaffId" class="btn btn-sm btn-outline-primary">Redigera</a>
+                            <a asp-page="Delete" asp-route-id="@s.StaffId" class="btn btn-sm btn-outline-danger">Ta bort</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

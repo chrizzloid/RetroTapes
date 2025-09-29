@@ -1,10 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using RetroTapes.Data;
 using RetroTapes.Services;
 using RetroTapes.ViewModels;
 
@@ -12,10 +8,16 @@ namespace RetroTapes.Pages.Films
 {
     public class CreateModel : PageModel
     {
-        private readonly SakilaContext _db;
         private readonly FilmService _svc;
+        private readonly LookupService _lookups;
         private readonly IInventoryService _inv;
-        public CreateModel(SakilaContext db, FilmService svc, IInventoryService inv) { _db = db; _svc = svc; _inv = inv; }
+
+        public CreateModel(FilmService svc, LookupService lookups, IInventoryService inv)
+        {
+            _svc = svc;
+            _lookups = lookups;
+            _inv = inv;
+        }
 
         [BindProperty] public FilmEditVm Vm { get; set; } = new();
 
@@ -36,17 +38,9 @@ namespace RetroTapes.Pages.Films
                 return Page();
             }
 
-            await _svc.UpsertAsync(Vm);
-            short filmId = (short)(Vm.FilmId > 0
-                ? (short)Vm.FilmId
-                : await _db.Films
-                    .Where(f => f.Title == Vm.Title && f.ReleaseYear == Vm.ReleaseYear)
-                    .OrderByDescending(f => f.LastUpdate)
-                    .Select(f => f.FilmId)
-                    .FirstAsync());
+            await _svc.UpsertAsync(Vm); 
 
-            Vm.FilmId = filmId;
-            if (Vm.StockDesired is int desired)
+            if (Vm.FilmId > 0 && Vm.StockDesired is int desired)
             {
                 await _inv.SetFilmStockAsync((short)Vm.FilmId, Vm.StoreId, desired);
             }
@@ -58,21 +52,17 @@ namespace RetroTapes.Pages.Films
         private async Task PopulateDropdownsAsync()
         {
             LanguageOptions = new SelectList(
-                await _db.Languages.AsNoTracking().OrderBy(l => l.Name).ToListAsync(),
-                "LanguageId", "Name");
+                await _lookups.GetLanguagesAsync(), "LanguageId", "Name");
 
             CategoryOptions = new MultiSelectList(
-                await _db.Categories.AsNoTracking().OrderBy(c => c.Name).ToListAsync(),
-                "CategoryId", "Name");
+                await _lookups.GetCategoriesAsync(), "CategoryId", "Name");
 
             ActorOptions = new MultiSelectList(
-                await _db.Actors.AsNoTracking().OrderBy(a => a.LastName).ThenBy(a => a.FirstName).ToListAsync(),
-                "ActorId", "LastName");
+                await _lookups.GetActorsAsync(), "ActorId", "LastName");
 
             ViewData["LanguageOptions"] = LanguageOptions;
             ViewData["CategoryOptions"] = CategoryOptions;
             ViewData["ActorOptions"] = ActorOptions;
         }
-
     }
 }

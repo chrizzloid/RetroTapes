@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using RetroTapes.Data;
-using RetroTapes.Models;
 using RetroTapes.Services;
 using RetroTapes.ViewModels;
 
@@ -17,12 +10,12 @@ namespace RetroTapes.Pages.Customers
     public class EditModel : PageModel
     {
         private CustomerService _service;
-        private readonly SakilaContext _db;
+        private readonly LookupService _lookups;
 
-        public EditModel(CustomerService service, SakilaContext db)
+        public EditModel(CustomerService service, LookupService lookups)
         {
             _service = service;
-            _db = db;
+            _lookups = lookups;
         }
 
         [BindProperty] public CustomerEditVm Vm { get; set; } = new();
@@ -78,29 +71,10 @@ namespace RetroTapes.Pages.Customers
 
         private async Task PopulateDropDownAsync()
         {
-            var stores = await _db.Stores
-                .AsNoTracking()
-                .OrderBy(s => s.StoreId)
-                .Select(s => new SelectListItem
-                {
-                    Value = s.StoreId.ToString(),
-                    Text = "Butik" + s.StoreId
-                })
-                .ToListAsync();
-
-            var addresses = await _db.Addresses
-                .AsNoTracking()
-                .OrderBy(a => a.AddressId)
-                .Select(a => new SelectListItem
-                {
-                    Value = a.AddressId.ToString(),
-                    Text = a.Address1
-
-                })
-                .ToListAsync();
-
-            StoreOptions = stores;
-            AddressOptions = addresses;
+            StoreOptions = new SelectList(
+                await _lookups.GetStoresAsync(), "StoreId", "StoreId");
+            AddressOptions = new SelectList(
+                await _lookups.GetAddressesAsync(), "AddressId", "Address1");
             ViewData["StoreOptions"] = StoreOptions;
             ViewData["AddressOptions"] = AddressOptions;
         }

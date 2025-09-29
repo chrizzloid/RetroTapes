@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RetroTapes.ViewModels
 {
@@ -39,5 +37,18 @@ namespace RetroTapes.ViewModels
         public string LanguageName { get; set; } = string.Empty;
         public string Categories { get; set; } = string.Empty;
         public DateTime LastUpdate { get; set; }
+    }
+
+
+    public class FilmDetailVm
+    {
+        public int FilmId;
+        public string Title;
+        public string? Description;
+        public string? ReleaseYear;
+        public string Language;
+        public string Categories;
+        public string Actors;
+        public DateTime LastUpdate;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using RetroTapes.Data;
 using RetroTapes.Infrastructure;
 using RetroTapes.Models;
@@ -89,7 +88,7 @@ namespace RetroTapes.Services
                     Name = c.FirstName + " " + c.LastName,
                     Email = c.Email,
                     Active = c.Active == "Y",
-                    ActiveRentalsCount = c.Rentals.Count(r => r.ReturnDate == null)                                         
+                    ActiveRentalsCount = c.Rentals.Count(r => r.ReturnDate == null)
                 })
                 .FirstOrDefaultAsync();
         }
@@ -125,9 +124,9 @@ namespace RetroTapes.Services
             entity.LastName = vm.LastName.Trim();
             entity.Email = string.IsNullOrWhiteSpace(vm.Email) ? null : vm.Email.Trim();
             entity.Active = vm.Active ? "Y" : "N";
-            entity.StoreId = vm.StoreId;           
+            entity.StoreId = vm.StoreId;
             entity.AddressId = vm.AddressId;
-            
+
 
             //touch
             entity.LastUpdate = DateTime.UtcNow;
@@ -148,14 +147,14 @@ namespace RetroTapes.Services
                     LastName = c.LastName,
                     Email = c.Email,
                     Active = c.Active == "Y",
-                    StoreId = c.StoreId,          
+                    StoreId = c.StoreId,
                     AddressId = c.AddressId,
-                    
+
                     LastUpdate = DateTime.UtcNow,
                 })
                 .FirstOrDefaultAsync();
-       
-        
+
+
         }
 
 
@@ -163,14 +162,14 @@ namespace RetroTapes.Services
 
         //DELETE hård delete
 
-        public async Task DeleteAsync(int customerId)
-        {
-            var entity = await _db.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId)
-                    ?? throw new KeyNotFoundException("Kunden finns inte");
+        //public async Task DeleteAsync(int customerId)
+        //{
+        //    var entity = await _db.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId)
+        //            ?? throw new KeyNotFoundException("Kunden finns inte");
 
-            _db.Customers.Remove(entity);
-            await _db.SaveChangesAsync();      
-        }
+        //    _db.Customers.Remove(entity);
+        //    await _db.SaveChangesAsync();
+        //}
 
         // Customer Picker dropdown
         public async Task<IReadOnlyList<CustomerListItemVm>> QuickPickAsync(string q, int take = 10)
@@ -196,5 +195,40 @@ namespace RetroTapes.Services
                 .ToListAsync();
 
         }
-}
+
+        internal async Task<CustomerDeleteVm?> GetDeleteInfoAsync(int id)
+        {
+            return await _db.Customers
+                .AsNoTracking()
+                .Where(c => c.CustomerId == id)
+                .Select(c => new CustomerDeleteVm
+                {
+                    CustomerId = c.CustomerId,
+                    Name = c.FirstName + " " + c.LastName,
+                    LastUpdate = c.LastUpdate,
+                })
+                .FirstOrDefaultAsync();
+
+        }
+
+        internal async Task<bool> DeleteAsync(int id, DateTime lastUpdate)
+        {
+            // kontrollera beroenden
+            if (await _db.Rentals.AnyAsync(r => r.CustomerId == id) ||
+                await _db.Payments.AnyAsync(p => p.CustomerId == id))
+            {
+                return false; // har relaterade poster, kan inte ta bort
+            }
+
+            // concurrency check
+            var customer = new Customer { CustomerId = id, LastUpdate = lastUpdate };
+            _db.Entry(customer).Property(c => c.LastUpdate).OriginalValue = lastUpdate;
+
+            _db.Customers.Attach(customer);
+            _db.Customers.Remove(customer);
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+    }
 }

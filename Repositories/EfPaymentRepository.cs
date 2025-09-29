@@ -66,5 +66,20 @@ namespace RetroTapes.Repositories
             _db.Payments.Remove(payment);
             return Task.CompletedTask;
         }
+
+        public async Task CreatePaymentAsync(int customerId, int? rentalId, byte staffId, decimal amount)
+        {
+            var p = new Payment
+            {
+                CustomerId = customerId,
+                RentalId = rentalId,
+                StaffId = staffId,
+                Amount = amount,
+                PaymentDate = DateTime.UtcNow
+            };
+
+            await _db.AddAsync(p);
+            await _db.SaveChangesAsync(); // spara
+        }
     }
 }
