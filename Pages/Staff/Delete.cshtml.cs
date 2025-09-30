@@ -1,27 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using RetroTapes.Data;
 using RetroTapes.Services;
+using RetroTapes.ViewModels;
 using StaffEntity = RetroTapes.Models.Staff;
 
 namespace RetroTapes.Pages.Staff
 {
     public class DeleteModel : PageModel
     {
-        private readonly SakilaContext _db; 
-        private readonly IStaffService _svc; 
-        public DeleteModel(SakilaContext db, IStaffService svc) { _db = db; _svc = svc; }
+        private readonly IStaffService _svc;
+        public DeleteModel(IStaffService svc) { _svc = svc; }
 
         [BindProperty] public StaffEntity Staff { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var s = await _db.Staff.AsNoTracking()
-                .Select(x => new StaffEntity { StaffId = x.StaffId, FirstName = x.FirstName, LastName = x.LastName })
-                .FirstOrDefaultAsync(x => x.StaffId == (byte)id);
-            if (s is null) return NotFound();
-            Staff = s; return Page();
+            StaffBasicVm staff = await _svc.GetDeatailAsync(id);
+            if (staff == null) return NotFound();
+
+            Staff = new StaffEntity
+            {
+                StaffId = staff.StaffId,
+                FirstName = staff.FirstName,
+                LastName = staff.LastName
+            };
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int id)

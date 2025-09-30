@@ -133,8 +133,25 @@ public class StaffService : IStaffService
         var s = await _db.Staff.FirstOrDefaultAsync(x => x.StaffId == id, ct);
         if (s == null) return (false, "Personalen hittades inte.");
 
+        bool hasPayments = await _db.Payments.AnyAsync(p => p.StaffId == id, ct);
+        bool hasRentals = await _db.Rentals.AnyAsync(r => r.StaffId == id, ct);
+        bool isManager = await _db.Stores.AnyAsync(st => st.ManagerStaffId == id, ct);
+
+        if (hasPayments || hasRentals || isManager)
+        {
+            return (false, "Kan inte ta bort personalen: används i Payments, Rentals eller Stores.");
+        }
+
         _db.Staff.Remove(s);
         await _db.SaveChangesAsync(ct);
         return (true, null);
+    }
+
+    public async Task<StaffBasicVm?> GetDeatailAsync(int id)
+    {
+        return await _db.Staff.AsNoTracking()
+            .Select(x => new StaffBasicVm { StaffId = x.StaffId, FirstName = x.FirstName, LastName = x.LastName })
+            .FirstOrDefaultAsync(x => x.StaffId == (byte)id);
+
     }
 }
