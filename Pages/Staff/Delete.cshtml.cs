@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using RetroTapes.Data;
+using RetroTapes.Repositories;
 using RetroTapes.Services;
 using StaffEntity = RetroTapes.Models.Staff;
 

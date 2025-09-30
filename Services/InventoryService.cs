@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RetroTapes.Data;
+using RetroTapes.Repositories;
 using RetroTapes.ViewModels;
 using InventoryEntity = RetroTapes.Models.Inventory;
 
