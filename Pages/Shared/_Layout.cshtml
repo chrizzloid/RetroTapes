@@ -43,9 +43,18 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Addresses/Index">Adresser</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-page="/Reservations/Index">Bokningar</a>
-                        </li>
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-page="/Reservations/Index">Bokningar</a>
+</li>
+
+@{
+    var activeName = Context.Session.GetString("ActiveStaffName");
+}
+<div class="ms-auto d-flex align-items-center gap-2">
+    <span class="small text-muted d-none d-md-inline">Aktiv:</span>
+    <span class="badge text-bg-secondary">@(!string.IsNullOrEmpty(activeName) ? activeName : "_")</span>
+    <a asp-page="/Staff/Choose" class="btn btn-sm btn-outline-secondary">Byt</a>
+</div>
 
                     </ul>
                 </div>

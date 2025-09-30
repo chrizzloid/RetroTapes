@@ -7,14 +7,20 @@
 
 
 <div class="row g-3">
-    <div class="col-md-8">
-        <label asp-for="Title" class="form-label"></label>
+    <div class="col-md-7">
+        <label asp-for="Title" class="form-label">Titel</label>
         <input asp-for="Title" class="form-control" />
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
 
+    <div class="col-md-3">
+        <label asp-for="StockDesired" class="form-label">Antal i lager</label>
+        <input asp-for="StockDesired" class="form-control" type="number" min="0" />
+        <span asp-validation-for="StockDesired" class="text-danger"></span>
+    </div>
+
     <div class="col-md-4">
-        <label asp-for="ReleaseYear" class="form-label"></label>
+        <label asp-for="ReleaseYear" class="form-label">Utgivningsår</label>
         <input asp-for="ReleaseYear" class="form-control" />
         <span asp-validation-for="ReleaseYear" class="text-danger"></span>
     </div>
@@ -29,15 +35,7 @@
 
     </div>
 
-    <div class="col-md-6">
-        <label asp-for="OriginalLanguageId" class="form-label">Originalspråk (valfritt)</label>
-        <select asp-for="OriginalLanguageId" class="form-select"
-                asp-items="@(ViewData["LanguageOptions"] as IEnumerable<SelectListItem>)">
-            <option value="">(ingen)</option>
-        </select>
 
-
-    </div>
 
     <div class="col-md-6">
         <label class="form-label">Kategorier</label>
@@ -56,6 +54,16 @@
                 asp-items="@(ViewData["ActorOptions"] as IEnumerable<SelectListItem>)"
                 multiple size="6">
         </select>
+
+    </div>    
+    
+    <div class="col-md-6">
+        <label asp-for="OriginalLanguageId" class="form-label">Originalspråk (valfritt)</label>
+        <select asp-for="OriginalLanguageId" class="form-select"
+                asp-items="@(ViewData["LanguageOptions"] as IEnumerable<SelectListItem>)">
+            <option value="">(ingen)</option>
+        </select>
+
 
     </div>
 </div>

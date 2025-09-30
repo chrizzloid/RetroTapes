@@ -21,6 +21,8 @@ namespace RetroTapes.ViewModels
 
         public List<byte> CategoryIds { get; set; } = new();
         public List<int> ActorIds { get; set; } = new();
+        public byte StoreId { get; set; } = 1;
+        public int? StockDesired { get; set; }
 
         // Concurrency
         public DateTime? LastUpdate { get; set; }

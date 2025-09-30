@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-//using Microsoft.EntityFrameworkCore;
-//using RetroTapes.Data;
 using RetroTapes.Services;
 using RetroTapes.ViewModels;
 
@@ -12,9 +10,14 @@ namespace RetroTapes.Pages.Films
     {
         private readonly FilmService _svc;
         private readonly LookupService _lookups;
+        private readonly IInventoryService _inv;
 
-        public CreateModel(FilmService svc, LookupService lookups) { _svc = svc; _lookups = lookups; }
-
+        public CreateModel(FilmService svc, LookupService lookups, IInventoryService inv)
+        {
+            _svc = svc;
+            _lookups = lookups;
+            _inv = inv;
+        }
 
         [BindProperty] public FilmEditVm Vm { get; set; } = new();
 
@@ -35,7 +38,13 @@ namespace RetroTapes.Pages.Films
                 return Page();
             }
 
-            await _svc.UpsertAsync(Vm);
+            await _svc.UpsertAsync(Vm); 
+
+            if (Vm.FilmId > 0 && Vm.StockDesired is int desired)
+            {
+                await _inv.SetFilmStockAsync((short)Vm.FilmId, Vm.StoreId, desired);
+            }
+
             TempData["Flash"] = "Filmen skapades.";
             return RedirectToPage("Index");
         }
@@ -44,7 +53,6 @@ namespace RetroTapes.Pages.Films
         {
             LanguageOptions = new SelectList(
                 await _lookups.GetLanguagesAsync(), "LanguageId", "Name");
-
 
             CategoryOptions = new MultiSelectList(
                 await _lookups.GetCategoriesAsync(), "CategoryId", "Name");
@@ -56,6 +64,5 @@ namespace RetroTapes.Pages.Films
             ViewData["CategoryOptions"] = CategoryOptions;
             ViewData["ActorOptions"] = ActorOptions;
         }
-
     }
 }

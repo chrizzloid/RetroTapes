@@ -30,6 +30,16 @@ namespace RetroTapes
             builder.Services.AddScoped<RetroTapes.Repositories.IReservationRepository, RetroTapes.Repositories.EfReservationRepository>();
             builder.Services.AddScoped<RetroTapes.Services.ReservationService>();
 
+            builder.Services.AddScoped<IInventoryService, InventoryService>();
+
+            builder.Services.AddSession(o =>
+            {
+                o.IdleTimeout = TimeSpan.FromHours(8);
+                o.Cookie.HttpOnly = true;
+                o.Cookie.IsEssential = true;
+            });
+            builder.Services.AddHttpContextAccessor();
+
 
             var app = builder.Build();
 
@@ -107,8 +117,9 @@ namespace RetroTapes
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthorization();
+
 
             app.MapStaticAssets();
             app.MapRazorPages()
