@@ -50,6 +50,8 @@ public partial class SakilaContext : DbContext
 
     public DbSet<Rental> Rentals { get; set; }
 
+
+
     public DbSet<SalesByFilmCategory> SalesByFilmCategories { get; set; }
 
     public DbSet<SalesByStore> SalesByStores { get; set; }
@@ -63,6 +65,9 @@ public partial class SakilaContext : DbContext
     public DbSet<View1> View1s { get; set; }
 
     public DbSet<VwActiveCustomer> VwActiveCustomers { get; set; }
+
+    public virtual DbSet<Reservation> Reservations { get; set; } = null!;
+
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -804,6 +809,30 @@ public partial class SakilaContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("last_name");
         });
+
+        modelBuilder.Entity<Reservation>(entity =>
+        {
+            entity.ToTable("reservation");                  // <- VIKTIGT: reservation (inte booking)
+
+            entity.HasKey(e => e.ReservationId);            // inget behov av HasName()
+
+            entity.Property(e => e.ReservationId).HasColumnName("reservation_id");
+            entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+            entity.Property(e => e.InventoryId).HasColumnName("inventory_id");
+
+            entity.Property(e => e.ReservedAt).HasColumnName("reserved_at").HasColumnType("datetime");
+            entity.Property(e => e.ExpiresAt).HasColumnName("expires_at").HasColumnType("datetime");
+            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.LastUpdate).HasColumnName("last_update").HasColumnType("datetime").IsConcurrencyToken();
+
+            entity.HasOne(d => d.Customer).WithMany().HasForeignKey(d => d.CustomerId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(d => d.Inventory).WithMany().HasForeignKey(d => d.InventoryId).OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(e => new { e.InventoryId, e.Status, e.ExpiresAt })
+                  .HasDatabaseName("IX_reservation_inventory_status_expires");
+        });
+
+
 
         OnModelCreatingPartial(modelBuilder);
     }

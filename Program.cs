@@ -26,6 +26,9 @@ namespace RetroTapes
             builder.Services.AddScoped<RetroTapes.Services.AddressService>();
             builder.Services.AddScoped<RetroTapes.Repositories.IRentalRepository, RetroTapes.Repositories.EfRentalRepository>();
             builder.Services.AddScoped<RetroTapes.Repositories.IPaymentRepository, RetroTapes.Repositories.EfPaymentRepository>();
+            // Reservations
+            builder.Services.AddScoped<RetroTapes.Repositories.IReservationRepository, RetroTapes.Repositories.EfReservationRepository>();
+            builder.Services.AddScoped<RetroTapes.Services.ReservationService>();
 
             builder.Services.AddScoped<IInventoryService, InventoryService>();
 
