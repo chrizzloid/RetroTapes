@@ -25,7 +25,6 @@ namespace RetroTapes.Pages.Staff
             HttpContext.Session.SetInt32("ActiveStaffId", staff.StaffId);
             HttpContext.Session.SetString("ActiveStaffName", staff.Name);
 
-            // Info-banner på index (du använder "TempFlashColor")
             TempData["StaffFlash"] = $"Aktiv anställd: {staff.Name}";
             TempData["StaffFlashColor"] = "info";
 
